@@ -53,7 +53,7 @@ To explicitly rebuild an earlier commit:
 .\tools\update-psxcore.ps1 -Revision <full-commit> -Development
 ```
 
-## Launch contract checked at a0c931f
+## Launch contract checked at bb6c5be
 
 LUNA's adapter in `nhddl/src/psxcore_launch.c` and `psxcore_transfer.c` stages
 the standalone ELF and transports ordinary `argc`/`argv`. It does not duplicate
@@ -63,10 +63,11 @@ The current file backend accepts `--file massN:/path/Game.VCD` or
 `--file-request massN:/path/REQUEST.BIN`. Direct-file selection also supports
 `--pcsx2` and `--license`; those overrides cannot accompany a request that
 already supplies them. `--init-cards` explicitly provisions missing cards;
-normal launching does not automatically enable it. Synthetic probing is a
+the core does not infer a frontend's provisioning policy. Synthetic probing is a
 development operation, not gameplay verification.
 
-The backend supports one internal ATA drive with FAT32/exFAT. It resets the
+The pinned backend supports ATA and USB endpoints with FAT32/exFAT. LUNA's game
+library still selects internal ATA images. The core resets the
 IOP and reopens storage itself. The selected VCD must remain accessible by
 relative path and measured identity after that reset. Firmware defaults to
 `/POPS/POPS.ELF` and `/POPS/IOPRP252.IMG` on the selected volume. Isolated cards
@@ -74,16 +75,21 @@ are routed to `/POPS/SAVES/<save_key>/card0` and `card1`.
 
 LUNA discovers case-insensitive VCD filenames on ATA and reads bounded disc
 metadata for artwork IDs without placing PS1 entries in the PS2 title cache.
-R3 cycles PS2, PS1, and Mix, intersecting favorites. Selected PS1 games bypass
-PS2 launch arguments, cheats, and VMC settings. Preparation checks firmware
-and existing card ownership; missing cards require Square confirmation before
-passing `--init-cards`. LUNA does not write card files. A missing save library
-prompts immediately; checking an existing library displays disc-read progress
-and permits cancellation. After confirmation, PSXCore validates the disc and
-saves authoritatively.
+L3 cycles PS2, PS1, and Mix, intersecting favorites. Selected PS1 games bypass
+PS2 launch arguments, cheats, and VMC settings. LUNA defaults unassigned PS1
+games to automatic private cards and groups verified multi-disc IDs into a
+volume-bound pair. Existing manual choices remain overrides. Automatic private
+launches pass `--init-cards` for missing cards; existing-save conflicts need a
+source choice before grouping. Shared launches instead pass
+`--shared-set`, both volume IDs, and the selected save endpoint. LUNA uses the
+public shared-store API and card formatter for offline management, compiling
+the unchanged upstream `src/shared_store.c` alongside the frontend. Settings
+and launch preflight show cancellable disc-identity progress. PSXCore validates
+the disc, volumes, cards, and enrollment again after reset. See
+[PlayStation memory cards](PS1-MEMORY-CARDS.md) for usage and storage layout.
 
-Request mode uses PSXCore's existing version-3 `NpFileLaunchRequest`, currently
-552 bytes, with a persisted save identity and measured image metadata. If
+Request mode accepts legacy v3/v4 requests and the checked 608-byte v5 contract
+with explicit disc/save endpoints and persistent volume identities. If
 library launching needs that mode, construct and validate it through PSXCore's
 public functions rather than reproducing its layout in LUNA. The older
 no-argument HostFS/native-partition path remains a separate reference path.
