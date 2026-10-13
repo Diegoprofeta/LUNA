@@ -2,293 +2,37 @@
   <img src="assets/luna-logo.svg" alt="LUNA logo" width="700">
 </p>
 
-LUNA (**Lightweight Unified Neutrino Access**) is a visual PS2 loader derived
-from [NHDDL](https://github.com/pcm720/nhddl) and
-[Neutrino](https://github.com/rickgaiser/neutrino). It preserves NHDDL's
-established ISO discovery, title configuration, and Neutrino launch path while
-adding a new library experience and a coordinated LUNA runtime.
+<p align="center"><strong>LIMEN UMBRAE NEXUS ARCANUM</strong></p>
 
-The current configuration is designed for an FMCB-hosted frontend and Neutrino
-runtime with games, artwork, and writable library state on an internal
-ATA/exFAT hard drive. LUNA requires a hard drive for its intended library
-performance: slower storage can make artwork retrieval and cache misses visibly
-delay navigation.
+LUNA is a modern visual game launcher for the PlayStation 2, built on [NHDDL](https://github.com/pcm720/nhddl). Designed to bring a polished,
+console-like experience, LUNA combines game discovery, library management, and multiple launch engines into one lightweight, unified interface.
 
-This README describes the current source tree. A published release package may
-have fewer features if the source has changed since that release.
+With support for [Neutrino](https://github.com/rickgaiser/neutrino) and [OPL](https://github.com/ps2homebrew/Open-PS2-Loader), LUNA gives you the freedom to choose how your PS2 games are launched,
+while experimental PlayStation 1 integration through [PSXCore](https://github.com/dnunezx/PSXCore) brings another generation of games into the same library.
 
-## Requirements
+Browse your collection in
+five library views, choose Neutrino or OPL for PS2 games, manage virtual memory
+cards, and customize the interface around your library.
 
-- **Compatible PlayStation 2:** hardware testing has been done on a fat model PS2.
-- **FMCB memory card:** with enough space for the LUNA application.
-- **Internal ATA/exFAT hard drive:** an HDD with an MBR or GPT partition table and an exFAT partition. This is the optimized game storage setup.
-- **Network adapter or HDD bridge:** all hardware testing was done with a GameStar PS2 SATA HDD Adapter.
-- **Artwork:** artwork is optional and is not required to launch an
-  ISO. For the complete library presentation use
-  [OrbitPS2 Manager — LUNA Edition](https://github.com/dnunezx/OrbitPS2-Manager-LUNA-edition)
-  to prepare the drive and obtain the PSBBN artwork.
+Experimental PS1 integration brings PlayStation games into the same library
+through [PSXCore](https://github.com/dnunezx/PSXCore).
 
-<details>
-<summary><strong>Installation</strong></summary>
+> **PSXCore is in early development. IGR and multi-disc swapping are not yet functional**
 
-These steps assume you already have a working FMCB memory card, a PS2
-controller, and a USB flash drive that your PS2 can read. LUNA is copied to the
-memory card; your games and artwork stay on the internal hard drive.
-LUNA must be installed on a PS2 memory card for in-game return (IGR) to work.
+PSXCore is an in-house, open-source project developed specifically for LUNA as an alternative to POPStarter.
+It was born from the need for a dedicated PlayStation 1 solution that could be actively maintained, updated, and improved over time.
+Development has already seen major breakthroughs in game compatibility, with significant progress on games previously thought to be broken or incompatible, including DOOM, Skullmonkeys, Duke Nukem, Parasite Eve II, and many more.
 
-### 1. Put LUNA on the USB drive
 
-1. On your computer, download the memory-card slot 1 package whose filename
-   ends in `-FMCB-mc0.zip` from the
-   [LUNA releases page](https://github.com/dnunezx/LUNA/releases).
-2. Open the ZIP file and choose **Extract** or **Extract all**. Open the
-   extracted folders until you can see a folder named `APP_LUNA`.
-3. Plug the USB flash drive into your computer. Open the USB drive and copy
-   the entire `APP_LUNA` folder to the root of the USB drive. Do not copy
-   only `luna.elf`; LUNA needs the files and folders inside `APP_LUNA` too.
-4. Before removing the USB drive, check that the file is located here:
+## Library views
 
-   ```text
-   USB:/APP_LUNA/luna.elf
-   ```
-
-### 2. Copy LUNA to the memory card
-
-5. Safely remove the USB drive from the computer and plug it into the PS2.
-6. Turn on the PS2 and wait for the FMCB menu.
-7. Open the **file manager** from the FMCB menu. On many
-   FMCB cards this program is called **uLaunchELF** or **wLaunchELF**. This is
-   the program that lets you copy files between the USB drive and memory card.
-8. In the file manager, open `mass:/`. This is usually the USB drive. Find
-   `APP_LUNA`, highlight the folder, and choose **Copy**.
-9. Go back to the device list and open `mc0:/`. This is the memory card in
-   slot 1. Choose **Paste** and wait for the copy to finish.
-10. Check that the memory card now contains these files. The folder name must
-    remain `APP_LUNA`:
-
-   ```text
-   mc0:/APP_LUNA/luna.elf
-   mc0:/APP_LUNA/luna.yaml
-   mc0:/APP_LUNA/neutrino.elf
-   mc0:/APP_LUNA/config/
-   mc0:/APP_LUNA/modules/
-   ```
-
-### 3. Add LUNA to the FMCB menu
-
-11. Return to the FMCB menu and open **FMCB Configurator**.
-12. Choose an empty menu item or application slot. Set the name to `LUNA`.
-13. Set the program path to:
-
-    ```text
-    mc0:/APP_LUNA/luna.elf
-    ```
-
-14. Save the FMCB settings. Return to the main FMCB menu and restart the PS2
-    if the new menu item does not appear immediately.
-15. Select **LUNA** from the FMCB menu. LUNA should start and scan the games
-    on the internal hard drive.
-
-The packaged configuration is for the memory card in slot 1 (`mc0:`). For a
-card installed in slot 2, use `mc1:/APP_LUNA/luna.elf` in the FMCB menu and
-change `return_path` in `luna.yaml` from `mc0:` to `mc1:`.
-
-### Optional background music
-
-Music is now optional. The release ZIP includes the soundtrack in a separate
-`Ambient-Music-Add-On` folder. Installing only `APP_LUNA` leaves music out and
-uses less memory-card space; LUNA works normally without it.
-
-1. To add music, copy `ambient.wav` from `Ambient-Music-Add-On` to the USB
-   drive, then use uLaunchELF or wLaunchELF to copy that file into the installed
-   `mc0:/APP_LUNA` folder. For slot 2, use `mc1:/APP_LUNA`.
-2. Check that the installed file is `mc0:/APP_LUNA/ambient.wav`. Copy only the
-   file, not the entire add-on folder. It needs about 1.3 MB of extra card space.
-3. Restart LUNA. Press **Triangle → Global**, set **Ambient sound** to **On**,
-   and press **Start** to save.
-
-To mute music, set **Ambient sound** to **Off** and save. To reclaim the extra
-card space, exit LUNA and remove only `ambient.wav` from `APP_LUNA` with the
-file manager. When upgrading from a version that included music, an existing
-`ambient.wav` may remain installed; remove it if you want to use LUNA without music.
-
-</details>
-
-<details>
-<summary><strong>Preparing the game drive</strong></summary>
-
-Prepare the ATA/exFAT drive on a computer before launching LUNA. The easiest
-way is to use [OrbitPS2 Manager — LUNA Edition](https://github.com/dnunezx/OrbitPS2-Manager-LUNA-edition).
-
-1. Connect or mount the ATA/exFAT game drive on your computer.
-2. Open **OrbitPS2 Manager — LUNA Edition**, click **Mount Directory**, and
-   select the root folder of your game drive.
-3. The manager checks for these folders and can create any that are missing:
-
-   ```text
-   CD/
-   DVD/
-   VCD/
-   POPS/
-   APPS/
-   ART/
-   CFG/
-   VMC/
-   ```
-
-   The manager does not create these folders when it starts. You
-   must click **OK** when the prompt appears. If you cancel it, mount the
-   drive again and accept the folder-creation prompt. Imports can also create
-   the specific folders they need automatically.
-4. Use the manager's **Import** feature instead of manually placing game
-   files:
-
-   - Choose **PS2 DVD** for a PS2 DVD `.iso` or `.zso`; it places the game in
-     `DVD/`.
-   - Choose **PS2 CD** for a PS2 CD image; it converts and places the game in
-     `CD/`.
-   - Let the manager read each disc image to find its title ID. Human-readable
-     game names are fine, and the manager can use the title ID for artwork.
-
-5. Use the manager's artwork tools after importing. OPL-style covers and disc
-   labels go in `ART/`. LUNA's square artwork goes in `ART/PSBBN/`. The
-   manager saves the square artwork using the required
-   `<TITLE_ID>.png` filename.
-6. Check that the drive now looks similar to this:
-
-   ```text
-   /CD/
-   /DVD/Example Game.iso
-   /ART/SLUS_200.02_COV.png
-   /ART/SLUS_200.02_ICO.png
-   /ART/PSBBN/SLUS_200.02.png
-   /CFG/
-   /VMC/
-   ```
-
-7. Safely eject the drive from the computer and return it to the PS2. LUNA
-   will scan the standard OPL folders when it starts. Do not move the game
-   files or artwork to the FMCB memory card.
-
-If an existing drive already works with OPL, preserve its layout and mount its
-root directory in the manager. LUNA uses the same title-ID conventions for
-OPL-compatible cover art.
-
-### Game storage modes
-
-Internal ATA/exFAT HDD remains the supported performance target.
-
-### Storage Devices menu
-
-Press **Start → Storage Devices** to choose which sources appear in the
-library: internal ATA/exFAT HDD, APA/HDLoader HDD, USB, MX4SIO, MMCE, iLink,
-and UDPFS. Internal ATA storage remains the packaged default. Connect storage
-before starting LUNA; live insertion and removal are not supported by this menu.
-
-- **Cross** toggles a source. Choose **Apply changes & scan** to save and refresh.
-- **Square** on an enabled source rescans that source while retaining the other
-  sources' games. **Rescan all enabled devices** refreshes the complete library.
-- **Circle** returns without applying pending edits.
-
-Each source shows its game count, no device found, or a scan failure. The menu
-also works when the library is empty. Preferences are written to `storage.cfg`
-beside the LUNA executable, normally on the FMCB memory card, independently of
-the game drives. Existing `luna.yaml` settings are used when no valid preferences
-exist; explicit launch arguments ignore saved preferences.
-
-MX4SIO and MMCE cannot be selected together. Changing the MX4SIO driver setup
-or the UDPFS address prompts LUNA to restart its storage drivers and reopen
-the library. A conflicting driver needed to access LUNA or Neutrino is protected.
-
-**UDPFS console IP address** sets the PS2's address, not the server's address.
-Use the controller keyboard and press Start to accept it; leave it empty to read
-`SYS-CONF/IPCONFIG.DAT` from a memory card. The effective address is passed to
-the matching LUNA Neutrino runtime when launching a network game. UDPFS requires
-working Ethernet and a running UDPFS server. iLink requires a console with an
-iLink port. Artwork performance on these optional sources still requires testing
-on physical hardware; the internal HDD remains the supported performance target.
-
-### Virtual memory cards on exFAT and APA/PFS drives
-
-LUNA currently creates and assigns VMCs on exFAT and other supported local
-file storage, including APA/PFS drives used for HDL games. APA drives appear in
-the VMC drive picker when their PFS metadata partition is mounted. Cards use
-that partition's `/VMC` folder, or `/OPL/VMC` when the metadata is stored on
-`__common`.
-
-APA/PFS VMCs use the matching bundled Neutrino runtime and require normal boot,
-8 KiB PFS zones, and card files whose direct extents fit the shared 64-fragment
-limit across the game and both card images. Quick boot, other PFS zone sizes,
-and files requiring indirect inode segments are not supported. Neutrino
-validates the mapping before allowing card reads and writes.
-
-Open a game's **Options → Game → Virtual memory cards**. It shows **Disabled**
-until a virtual card is assigned to either slot. Press **Cross** to open its
-settings. Choose **Create new card** to make a formatted 8 MiB card named
-`LUNA_001.bin` (then `LUNA_002.bin`, and so on) in that drive's `/VMC` folder.
-Creation never replaces an existing image. You can also copy an existing raw
-OPL `.bin` card image into that folder. Choose **VMC slot 1** or **VMC slot 2**,
-select a card, and press **Start** on the Game tab to save the assignment.
-Choose **Physical card** for an individual slot or **Disable virtual cards**
-to return both slots to physical cards. Card creation is immediate; slot
-assignments are saved with the Game tab. The main menu's **Virtual Memory
-Cards** manager remains available for creating cards across drives.
-
-Neutrino checks the card's superblock, page geometry, and file size before
-launch. It accepts raw 8, 16, 32, and 64 MiB images; images with separate ECC
-bytes or a mismatched length are rejected. Back up an existing OPL card before
-its first LUNA save. A complete save, reboot, and reload on a physical PS2 is
-still required to establish game compatibility.
-
-</details>
-
-<details>
-<summary><strong>What LUNA adds</strong></summary>
-
-LUNA is more than a visual rename of NHDDL. It contains coordinated changes to
-both the NHDDL-derived frontend and the Neutrino-derived game runtime.
-
-| Area | LUNA addition |
+| View | Experience |
 | --- | --- |
-| Library interface | A PS2-inspired glass interface with animated stars and crystals, LUNA branding, five selectable library views, and a dedicated Options screen. |
-| List view | A list-and-cover layout with a rotating disc label, Favorites controls, and paired cover/disc artwork. |
-| Collections view | A PSBBN-inspired cover flow with animated focus changes and a Collections/Favorites filter. |
-| 3D view | A 6x4 display of projected game cases with a large selected-cover preview, focus zoom and turn, a clear-sleeve shimmer, scrolling titles, and a short entrance animation. |
-| Orbit view | A depth-sorted ring of covers with perspective, fading, shared artwork caching, and a Square-button Random Scan that avoids reselecting the current title. |
-| Scroll view (experimental) | A scrolling title and logo display alongside animated ambient orbs. |
-| Favorites | Per-drive Favorites stored in `/LUNA/favorites.txt`, shared by List and Collections without modifying the game library. |
-| Artwork | OPL-compatible covers plus optional disc labels and PSBBN-style square artwork, with view-specific caching and GS VRAM recovery. |
-| Configured storage scan | The library scans ATA and HDL when available. USB, MX4SIO, MMCE, iLink, and UDPFS require explicit `mode:` entries. The shipped configuration uses internal ATA/exFAT and avoids waiting for a nonexistent second mass-storage device. |
-| Safer persistent state | LUNA writes cache, last-title, global options, and per-title settings under `/LUNA`, reads legacy `/nhddl` state as a fallback, bounds stored paths, and replaces key files only after a complete temporary write. |
-| FMCB deployment | The frontend and runtime can live together at `mc0:/APP_LUNA` while each hard drive retains its own artwork, cache, settings, and Favorites. |
-| In-game return | Hold L1 + L2 + R1 + R2 + Start + Select for roughly one second to return from a game to the configured LUNA ELF. This has been tested on a physical FAT PS2. |
-| Return safety | The Neutrino runtime coordinates optical and DEV9 shutdown before handing off to the configured return path. |
-| Physical power button | LUNA adds a dedicated IOP-side safe-shutdown path. It coordinates DEV9 shutdown before issuing the standard power-off command, preserving the console's normal power-off behavior. |
-
-### Per-game video output
-
-Open **Options → Game → Video → Video out**. Up/down selects a mode, and
-Cross enables it. Selecting an enabled mode again returns to **Default**,
-which keeps the game's original output. Press **Start** to save;
-**Triangle** returns to the Video submenu.
-
-Neutrino offers 240p/288p, 480p/576p, and three 1080i scaling presets.
-Field flipping in the Video submenu applies to the selected output mode.
-These options change video output without automatically increasing a game's
-internal rendering resolution. Neutrino is the sole game-launch backend;
-obsolete core-selection settings are ignored.
-
-</details>
-
-## Library views and controls
-
-Press **Circle** to cycle through enabled views. **List**, **Collections**,
-**Orbit**, and **3D** are enabled by default. The **Views** tab in Options can
-also enable **Scroll**, which is marked experimental.
-
-### Views in motion
-
-Three views are shown below using sample game artwork.
+| **List** | A title list with a cover and spinning disc label. Choose Separate or Overlap artwork. |
+| **Collections** | A PSBBN-inspired cover flow using square artwork. |
+| **Orbit** | A rotating ring of covers with perspective, depth, and Random Scan. |
+| **3D** | A 6 × 4 display of game cases with a selected-cover preview and PS1 jewel-case styling. |
+| **Scroll** | A horizontal logo strip above a cover carousel. Missing logos fall back to title text. |
 
 <table>
   <tr>
@@ -300,140 +44,252 @@ Three views are shown below using sample game artwork.
   </tr>
 </table>
 
-The 3D view displays game cases in four rows and turns the selected case toward
-the viewer. The experimental Scroll view shows animated ambient orbs beside a
-scrolling title and logo display.
+The previews illustrate these views; individual details may differ in newer builds.
 
-- **Cross:** launch the selected game.
-- **Triangle:** open Options. Its tabs are **Game**, **Global**, **Views**,
-  and **Orbs**.
-- **List layout:** open the **Views** tab, press **Cross** or **Circle**
-  on **List art layout** to choose Separate or Overlap, then press **Start**
-  to save. Overlap places the spinning disc behind the cover, with its lower
-  half hidden. The choice is saved for the library on that drive.
-- **Background orb colors:** in the **Orbs** tab, choose **Orb color** and
-  **Tail color** separately with Left or Right, then press **Start** to save.
-  Original keeps the existing colors. These choices affect only the shared
-  Ambient Orbs background; Orbit view, Scroll view, and the loading screen keep
-  their own colors. The Orbs tab is available only when **Ambient Orbs** is
-  selected as the Global background; other backgrounds leave it dimmed and
-  skip it during tab navigation.
-- **PlayStation 2 logo:** the startup logo is **On** by default. In the
-  **Global** tab, switch **PlayStation 2 logo** On or Off and press **Start** to
-  set the default for games on the current drive. A game that needs a different
-  choice can use **Game → Video → Show PS2 logo**; save that game's choice with
-  **Start**. Its setting takes precedence over the Global default.
-- **Start:** open the main menu for File Explorer, Virtual Memory Cards,
-  Exit LUNA, and Shutdown.
-- **Hold R1:** open the quick menu in any library view. While holding R1,
-  use Up/Down to choose and Cross to confirm; release R1 to close without
-  choosing. The menu offers Show Favorites/Show All, Add/Remove from Favorites,
-  Options, and Random in Orbit. It slides in from the right, with button icons
-  beside Options and Random. R1 + Select switches the filter, R1 + Square adds/removes a
-  favorite, R1 + Triangle opens Options, and R1 + R3 starts Random in Orbit.
-  Navigation pauses while the menu is open.
-- **Square in List:** a shortcut to add or remove the selected game from Favorites.
-- **Select:** switch between the full library and Favorites in any library view.
-- **Collections:** Left/Up and Right/Down move between covers; holding a direction
-  repeats. Hold L2/R2 to fast
-  scan; quick L2/R2 taps do nothing.
-- **Square in Orbit:** start Random Scan. Any deliberate navigation
-  input cancels it.
-- **L2/R2 in List:** page backward/forward.
-- **L2/R2 in 3D:** move backward or forward one page.
+Press **Circle** to cycle through enabled views. List, Collections, Orbit,
+and 3D are enabled by default; enable Scroll in **Options → Views**.
+Favorites, the selected view, and the game-platform filter are remembered.
 
-Hold **L1 + L2 + R1 + R2 + Start + Select** for roughly one second to return
-from a game to LUNA. The default FMCB configuration targets
-`mc0:/APP_LUNA/luna.elf`. IGR works only when LUNA is installed on a PS2 memory
-card and `return_path` points to that installation. Return from Tony Hawk's
-Pro Skater 4 was verified in PCSX2 from both the pregame screen and active
-gameplay. In-game return has also been tested on a physical FAT PS2.
+## Requirements
 
-## Artwork layout
+- **PlayStation 2:** hardware testing has been performed on a fat PS2.
+- **Free McBoot memory card:** enough space for the complete `APP_LUNA` folder.
+- **Internal ATA/exFAT HDD:** the intended setup for library and artwork
+  performance, with an MBR or GPT partition table and an exFAT partition.
+- **Compatible network adapter or HDD bridge:** hardware testing used a
+  GameStar PS2 SATA HDD Adapter.
+- **Optional artwork:** games can launch without it. Use
+  [OrbitPS2 Manager — LUNA Edition](https://github.com/dnunezx/OrbitPS2-Manager-LUNA-edition)
+  to prepare the library and artwork.
 
-LUNA continues to use OPL-compatible title IDs and PNG artwork names:
+Other storage sources are selectable through **Start → Storage Devices**.
+Artwork performance on slower devices can affect navigation.
+
+## Installation
+
+These steps use a memory card in slot 1 (`mc0:`), a working FMCB setup, and
+a USB drive your PS2 can read.
+
+1. Download the package ending in `-FMCB-mc0.zip` from
+   [LUNA Releases](https://github.com/dnunezx/LUNA/releases).
+2. Extract it and copy the complete `APP_LUNA` folder to the USB drive's root.
+3. On the PS2, open uLaunchELF or wLaunchELF from FMCB. Copy `APP_LUNA` from
+   `mass:/` to `mc0:/`.
+4. Open FMCB Configurator, add a menu item named **LUNA**, and set its path to
+   `mc0:/APP_LUNA/luna.elf`. Save the FMCB configuration.
+5. Connect the prepared game drive and start LUNA from FMCB.
+
+Keep the application folder intact:
 
 ```text
-/ART/<TITLE_ID>_COV.png        140x200 cover used by List and Scroll
-/ART/<TITLE_ID>_ICO.png        optional 64x64 transparent disc label used by List
-/ART/PSBBN/<TITLE_ID>.png      optional 256x256 square artwork for Collections and Orbit
-/ART/SCROLL/<TITLE_ID>_LGO.png  optional logo for Scroll (PS1 and PS2)
+mc0:/APP_LUNA/
+  luna.elf
+  luna.yaml
+  neutrino.elf
+  config/
+  modules/
 ```
 
-Use
-[OrbitPS2 Manager — LUNA Edition](https://github.com/dnunezx/OrbitPS2-Manager-LUNA-edition)
-to obtain and prepare the square PSBBN artwork expected by Collections and Orbit.
-Missing Scroll logos show the game title as text instead.
-If upgrading an existing artwork library, rename `/ART/ORBS` to `/ART/SCROLL`.
-Scroll shows five logos above a horizontal cover carousel. The selected logo
-is enlarged, while neighboring covers recede in a dimmed V arrangement beneath
-their matching logos. The selected cover uses the same size and artwork quality
-as List.
+A PSXCore-enabled installation also needs `psxcore-runtime-bootstrap.elf`
+beside `neutrino.elf`. Use the matching runtime files supplied for your build.
 
-## Storage and configuration
+For memory-card slot 2, use `mc1:/APP_LUNA/luna.elf` and change `return_path`
+in `luna.yaml` to match. Memory-card installation is required for LUNA's
+configured Neutrino in-game return path.
 
-The supplied FMCB configuration uses:
+### Optional ambient music
 
-```yaml
-mode: ata
-return_path: mc0:/APP_LUNA/luna.elf
-```
+If your release includes `Ambient-Music-Add-On`, copy its `ambient.wav` file
+into `APP_LUNA`. It uses about 1.3 MB of additional card space. Enable
+**Options → Global → Ambient sound**, then press **Start** to save.
+LUNA also works without the music file.
 
-Writable state stays with the game drive:
+## Preparing your library
+
+Mount the drive in **OrbitPS2 Manager — LUNA Edition** and accept its prompt
+to create missing library folders. Import your PS2 games and obtain artwork
+through the manager. Keep games and artwork on the game drive.
 
 ```text
-/ART/
-/LUNA/cache.bin
-/LUNA/lastTitle.bin
-/LUNA/lastView.txt
-/LUNA/favorites.txt
-/LUNA/global.yaml
-/LUNA/<game name>.yaml
+/CD/                         PS2 CD images
+/DVD/                        PS2 DVD images
+/VCD/                        PS1 VCD images
+/ART/                        Cover and disc artwork
+/ART/PSBBN/                  Square artwork
+/ART/SCROLL/                 Scroll logos
+/CHT/                        Raw PS2RD cheat files
+/VMC/                        PS2 virtual memory cards
+/LUNA/                       Library state and settings
 ```
 
-LUNA saves the selected library view as `lastView.txt` whenever Circle switches
-views and restores it on the next start. A missing or invalid file starts in
-List. Swapping hard drives also swaps their library, artwork, Favorites,
-saved view, cache, and per-game configuration. Existing `/nhddl` cache and
-option files can still be read for migration, but new writes go to `/LUNA`.
+An existing OPL library can retain its title-ID artwork conventions.
+Connect storage before launching LUNA; live insertion and removal are not
+supported by the Storage Devices menu.
 
-## Source layout
+### Experimental PS1 setup
 
-- `nhddl/`: frontend submodule from [nhddl-luna](https://github.com/dnunezx/nhddl-luna), configured for its `luna` branch.
-- `neutrino/`: backend submodule from [neutrino-luna](https://github.com/dnunezx/neutrino-luna), configured for its `master` branch.
-- `tools/`: build, artwork generation, and FMCB packaging helpers.
-- `LICENSES/`: licenses retained from upstream projects and dependencies.
+**PSXCore is in early development.** PS1 discovery and launch preparation are
+currently integrated for internal ATA drives.
+This does not establish compatibility for every PS1 game or storage setup.
 
-Test suites, fixtures, emulator setup, diagnostic tools, and captured results
-are kept locally and ignored in each repository, including the submodules.
+Place compatible PS1 `.VCD` images in `VCD/`. The game drive must also contain
+the exact firmware files accepted by the bundled PSXCore version:
 
-See [UPSTREAM.md](UPSTREAM.md) for exact source lineage and
-[AUTHORS.md](AUTHORS.md) for attribution. The installation layout is described
-above. This repository pins exact commits for both submodules; check them out
-with `git submodule update --init --recursive`.
+```text
+/POPS/POPS.ELF
+/POPS/IOPRP252.IMG
+```
 
-### Special thanks
+Sony's POPS runtime is proprietary and **is not included**. Supply these files
+separately. LUNA checks their size and SHA-256 before handing the game to
+PSXCore; missing or mismatched files produce an error in the frontend.
 
-Special thanks to **Ivan V ([pcm720](https://github.com/pcm720))**, the main
-developer of NHDDL, and **Rick Gaiser ([Maximus32](https://github.com/ps2max32))**,
-the creator of Neutrino. Their work forms the foundation of LUNA.
+Press **L3** to choose Mix or PS1, select a game, and press **Cross**.
+The default shared card pair is created when missing. Games using that pair
+share its save space; cards are not automatically isolated per game.
 
-Thanks to **[CosmicScale](https://github.com/CosmicScale)** and his
-**[PSBBN Definitive Project](https://github.com/CosmicScale/PSBBN-Definitive-Project)**,
-which inspired LUNA's design and supplied assets used by LUNA.
+## Controls
 
-Thanks to **[NathanNeurotic (Ripto)](https://github.com/NathanNeurotic)**
-for helping with LUNA's ambient orbs, and to **[aap](https://github.com/aap/osdbits)**
-for reverse engineering parts of the PlayStation 2's OSDSYS in `osdbits`.
+| Button | Library action |
+| --- | --- |
+| **Cross** | Launch the selected game. |
+| **Circle** | Switch to the next enabled view. |
+| **Triangle** | Open Options. |
+| **Start** | Open the main menu. |
+| **Select** | Switch between All and Favorites. |
+| **L3** | Cycle Mix → PS2 → PS1 in PSXCore-enabled builds. |
+| **Hold R1** | Open the quick menu. |
+| **Square in List** | Add or remove the selected Favorite. |
+| **Square in Orbit** | Start Random Scan; navigation cancels it. |
+| **L2 / R2 in List or 3D** | Move between pages. |
+| **Hold L2 / R2 in Collections** | Fast scan through covers. |
 
-Thanks to all of the LUNA beta testers.
+While holding **R1**, use **Cross** to toggle the Favorites filter,
+**Circle** to toggle the selected Favorite, **Triangle** for Options,
+**L3** for the platform filter, or **R3** for Orbit Random Scan.
 
-## Repository contents
+### In-game return
 
-Apart from the interface preview GIFs, this source tree intentionally does
-**not** contain game ISOs, console firmware, standalone cover artwork, virtual
-hard-drive images, emulator binaries, development backups, or release packages.
+LUNA offers IGR to Neutrino and OPL,  hold
+**L1 + L2 + R1 + R2 + Start + Select** for roughly one second to return to
+the configured LUNA ELF.
+PSXCore's IGR is currently not working
 
-LUNA modifications and original LUNA code are attributed to
-**Danny Nunez (dnunezx) 2026**. Upstream code remains credited to its respective
-authors and is distributed under the licenses preserved in `LICENSES/`.
+## Game settings
+
+Open **Triangle → Game** for the selected title, or **Global** for defaults.
+Press **Start** to save changes.
+
+- **PS2 game core:** Neutrino is the default. Select OPL globally or per game.
+  OPL launch integration covers ATA/FAT32/exFAT, APA/HDL, USB, MX4SIO, iLink,
+  MMCE, and UDPFS.
+- **Compatibility and video:** choose the settings for the selected PS2 core.
+  Neutrino includes 240p/288p, 480p/576p, and 1080i scaling options. Output
+  changes do not automatically increase a game's internal rendering resolution.
+- **Startup logo:** set the PS2 logo globally or override it for a game.
+- **Cheats:** select entries from `CHT/<TITLE_ID>.cht`, enable cheats, and save.
+  Cheats are off by default. This path uses raw PS2RD codes and the matching
+  LUNA Neutrino runtime; encrypted cheat files are not supported.
+- **Appearance:** choose backgrounds, glass tint, fonts, PS1 case style,
+  List artwork layout, and Ambient Orbs colors and formations.
+
+
+## Virtual memory cards
+
+Open **Start → Virtual Memory Cards** to manage cards. PSXCore-enabled builds
+offer separate PlayStation and PlayStation 2 managers.
+
+### PlayStation 2
+
+Create formatted 8 MiB cards or assign existing compatible raw OPL `.bin`
+images from the game's drive. Open **Game → Virtual memory cards** to assign
+slot 1 and slot 2, then press **Start** to save. Physical cards remain an option.
+
+Supported local card locations include exFAT HDD, USB, MX4SIO, iLink, and
+mounted APA/PFS metadata storage. Neutrino accepts compatible raw 8, 16, 32,
+and 64 MiB images. APA/PFS cards require the matching runtime and have layout
+and fragmentation limits; compatibility still needs physical-console testing.
+UDPFS does not offer local file-card creation or selection.
+
+### PlayStation
+
+Use the **default shared cards** on the game drive, or create and assign a
+**named pair** through the game's memory-card settings. Both slots follow the
+selected pair. Press **Start** in game settings to save the assignment.
+
+```text
+/POPS/ps1emu/card0              Default shared slot 1
+/POPS/ps1emu/card1              Default shared slot 2
+/POPS/CARDS/<name>/card0.vmc     Named pair, slot 1
+/POPS/CARDS/<name>/card1.vmc     Named pair, slot 2
+```
+
+Each card is 128 KB. The manager supports import, export, backups of both
+cards, and recovery of interrupted card operations. Importing into a shared
+card affects every game using it. These management features are part of the
+experimental PS1 integration; real-game save/reload testing remains ongoing.
+
+
+
+## Storage and built-in tools
+
+**Start → Storage Devices** selects ATA/exFAT HDD, APA/HDLoader HDD, USB,
+MX4SIO, MMCE, iLink, or UDPFS. Toggle sources and choose
+**Apply changes & scan**, rescan one enabled source with **Square**, or rescan
+all enabled devices. MX4SIO and MMCE cannot be selected together. UDPFS needs
+Ethernet and a running server; its console-IP setting is the PS2's address.
+
+**Start → File Explorer** opens a two-pane browser for storage and memory
+cards. Copy or move marked items, create folders, rename files, and inspect
+details. Transfers show progress and offer Skip, Keep Both, or Replace when
+names conflict. Moves verify copied data before removing the source.
+
+**Start → Language** selects English, Español, or Português (Brazilian
+Portuguese). The preference applies immediately and is saved beside LUNA.
+The main menu also offers **Exit LUNA** and **Shutdown**.
+
+## Artwork and saved preferences
+
+Artwork is optional. LUNA uses title IDs and these PNG naming conventions:
+
+```text
+/ART/<TITLE_ID>_COV.png         Cover artwork
+/ART/<TITLE_ID>_ICO.png         Optional disc label
+/ART/PSBBN/<TITLE_ID>.png       Square artwork for Collections and Orbit
+/ART/SCROLL/<TITLE_ID>_LGO.png  Optional Scroll logo
+```
+
+
+Library state lives under `/LUNA` on the game drive, including cache,
+last-launched title, Favorites, view selection, and game settings. Legacy
+`/nhddl` state remains readable as a fallback. Storage and language preferences
+are saved beside the LUNA executable. PS1 card selections live under
+`/POPS/CARD_SELECTIONS` on the game drive.
+
+## Source and credits
+
+| Component | Role |
+| --- | --- |
+| [`nhddl/`](https://github.com/dnunezx/nhddl-luna) | LUNA frontend derived from NHDDL. |
+| [`neutrino/`](https://github.com/dnunezx/neutrino-luna) | Default PS2 game runtime. |
+| [`opl/`](https://github.com/dnunezx/Open-PS2-Loader) | Alternate PS2 launch integration. |
+| [`psxcore/`](https://github.com/dnunezx/PSXCore) | Independently maintained, experimental PS1 dependency in early development. |
+
+Initialize the pinned dependencies with `git submodule update --init --recursive`.
+PSXCore is consumed unchanged; LUNA-specific integration belongs in LUNA.
+
+Special thanks to **Ivan V ([pcm720](https://github.com/pcm720))** for NHDDL,
+**Rick Gaiser ([Maximus32](https://github.com/ps2max32))** for Neutrino,
+and the **Open PS2 Loader contributors**.
+
+Thanks to **[CosmicScale](https://github.com/CosmicScale)** and the
+**[PSBBN Definitive Project](https://github.com/CosmicScale/PSBBN-Definitive-Project)**
+for design inspiration and assets, **[NathanNeurotic (Ripto)](https://github.com/NathanNeurotic)**
+for help with ambient orbs, **[aap](https://github.com/aap/osdbits)** for OSDSYS
+reverse engineering, and all LUNA beta testers.
+
+See [AUTHORS.md](AUTHORS.md), [UPSTREAM.md](UPSTREAM.md), and
+the preserved licenses in `LICENSES/` for attribution and source lineage.
+Original LUNA code and modifications: **Danny Nunez (dnunezx), 2026**.
+Games, Sony firmware, and proprietary POPS runtime files are not distributed
+in this source repository.
