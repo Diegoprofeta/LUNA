@@ -110,8 +110,8 @@ jobs:
             echo 'Current PSXCore validated; no reference update needed. Publication permission checked.' >> "$GITHUB_STEP_SUMMARY"
             exit 0
           fi
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git config user.name 'Danny Nunez'
+          git config user.email 'dnunezx@users.noreply.github.com'
           git update-index --cacheinfo "160000,$CORE_SHA,psxcore"
           [[ "$(git diff --cached --name-only)" == psxcore ]]
           git diff --cached --check
