@@ -1,0 +1,120 @@
+name: Update PSXCore
+
+on:
+  schedule:
+    - cron: '7,22,37,52 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: update-psxcore
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    outputs:
+      changed: ${{ steps.revision.outputs.changed }}
+      core_sha: ${{ steps.revision.outputs.core_sha }}
+      luna_sha: ${{ steps.revision.outputs.luna_sha }}
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          ref: main
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Resolve latest upstream revision
+        id: revision
+        shell: bash
+        run: |
+          set -euo pipefail
+          previous=$(git rev-parse HEAD:psxcore)
+          latest=$(git ls-remote https://github.com/dnunezx/PSXCore.git refs/heads/main | cut -f1)
+          [[ "$latest" =~ ^[0-9a-f]{40}$ ]]
+          echo "core_sha=$latest" >> "$GITHUB_OUTPUT"
+          echo "luna_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          if [[ "$previous" == "$latest" ]]; then
+            echo 'changed=false' >> "$GITHUB_OUTPUT"
+            echo 'PSXCore is already current.' >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo 'changed=true' >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Prepare the exact candidate
+        if: steps.revision.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
+        env:
+          CORE_SHA: ${{ steps.revision.outputs.core_sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          git submodule update --init --recursive nhddl psxcore
+          previous=$(git rev-parse HEAD:psxcore)
+          git -C psxcore fetch origin main
+          git -C psxcore merge-base --is-ancestor "$previous" "$CORE_SHA"
+          git -C psxcore checkout --detach "$CORE_SHA"
+
+      - name: Build hardware and emulator packages and validate runtime
+        if: steps.revision.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
+        env:
+          BUILD_IMAGE: ps2max/dev@sha256:e390699d46818e7c736f414ae5b1789d3ef7d3d914ce646a8a7bd027bd7e4521
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker run --rm -v "$PWD:/workspace" \
+            -e LUNA_BUILD_IMAGE="$BUILD_IMAGE" "$BUILD_IMAGE" sh -eu -c '
+              for mode in OFF ON; do
+                export LUNA_EMULATOR_OPTION="$mode"
+                export LUNA_BUILD_DIR="/workspace/nhddl/build-ci-psxcore-$mode"
+                sh /workspace/tools/build-luna-psxcore.sh
+              done
+            '
+          echo 'Hardware and emulator builds and production bootstrap validation passed. Gameplay remains untested.' >> "$GITHUB_STEP_SUMMARY"
+
+  publish:
+    needs: validate
+    if: needs.validate.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          ref: ${{ needs.validate.outputs.luna_sha }}
+          persist-credentials: false
+
+      - name: Publish only the validated reference
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CORE_SHA: ${{ needs.validate.outputs.core_sha }}
+          LUNA_SHA: ${{ needs.validate.outputs.luna_sha }}
+          CHANGED: ${{ needs.validate.outputs.changed }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "$CORE_SHA" =~ ^[0-9a-f]{40}$ ]]
+          [[ "$LUNA_SHA" =~ ^[0-9a-f]{40}$ ]]
+          current_luna=$(git ls-remote origin refs/heads/main | cut -f1)
+          current_core=$(git ls-remote https://github.com/dnunezx/PSXCore.git refs/heads/main | cut -f1)
+          if [[ "$current_luna" != "$LUNA_SHA" || "$current_core" != "$CORE_SHA" ]]; then
+            echo 'A repository changed during validation. A later run will rebuild the new candidate.' >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          gh auth setup-git
+          if [[ "$CHANGED" != true ]]; then
+            git push --dry-run origin HEAD:main
+            echo 'Current PSXCore validated; no reference update needed. Publication permission checked.' >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git update-index --cacheinfo "160000,$CORE_SHA,psxcore"
+          [[ "$(git diff --cached --name-only)" == psxcore ]]
+          git diff --cached --check
+          git commit -m "Update PSXCore to ${CORE_SHA:0:7} after build validation"
+          git push origin HEAD:main
+          echo "Updated LUNA to validated PSXCore $CORE_SHA." >> "$GITHUB_STEP_SUMMARY"

@@ -13,7 +13,7 @@ development="${LUNA_PSXCORE_DEVELOPMENT:-OFF}"
 runtime_elf="${LUNA_PSXCORE_RUNTIME_ELF:-}"
 
 if [ ! -f "$core/Makefile" ]; then
-  echo "Initialize the private psxcore submodule before building." >&2
+  echo "Initialize the psxcore submodule before building." >&2
   exit 1
 fi
 mkdir -p "$build_dir"
@@ -48,8 +48,16 @@ sh "$workspace/tools/bootstrap-ps2-libtiff.sh"
 # A supplied ELF allows direct and frontend tests to use exactly the same bytes.
 runtime_source=external-reference-unverified
 if [ -z "$runtime_elf" ]; then
+  if [ -z "${NP_BDMA_MODULE_DIR:-}" ]; then
+    NP_BDMA_MODULE_DIR="$build_dir/psxcore-drivers"
+    sh "$workspace/tools/fetch-psxcore-drivers.sh" "$NP_BDMA_MODULE_DIR"
+    export NP_BDMA_MODULE_DIR
+  fi
   make -C "$core" runtime
-  runtime_elf="$core/build/runtime/psxcore-runtime-bootstrap.elf"
+  runtime_elf="$core/build/runtime/psxcore.elf"
+  if [ ! -f "$runtime_elf" ]; then
+    runtime_elf="$core/build/runtime/psxcore-runtime-bootstrap.elf"
+  fi
   runtime_source=matching-checkout
 fi
 if [ ! -f "$runtime_elf" ]; then
@@ -63,6 +71,11 @@ cmake -S "$frontend" -B "$build_dir" \
   -DLUNA_PSXCORE_DEVELOPMENT="$development" \
   -DLUNA_PSXCORE_SOURCE_DIR="$core"
 cmake --build "$build_dir" --parallel 2
+# Build a host-side integration utility from LUNA's actual production validator.
+cc -std=c11 -Wall -Wextra -Werror -I"$frontend/include" -I"$core/include" \
+  "$frontend/src/psxcore_transfer.c" "$workspace/tools/validate-psxcore-bootstrap.c" \
+  -o "$build_dir/validate-psxcore-bootstrap"
+"$build_dir/validate-psxcore-bootstrap" "$runtime_elf"
 cp "$runtime_elf" "$build_dir/psxcore-runtime-bootstrap.elf"
 sha256sum "$build_dir/psxcore-runtime-bootstrap.elf" > "$build_dir/psxcore-runtime-bootstrap.sha256"
 final_revision="$(core_git rev-parse HEAD)"
@@ -85,7 +98,7 @@ compiler_version="$("$PS2DEV/ee/bin/mips64r5900el-ps2-elf-gcc" -dumpfullversion)
     printf 'build_image=%s\nbuild_image_id=%s\n' "${LUNA_BUILD_IMAGE:-unspecified}" "${LUNA_BUILD_IMAGE_ID:-unspecified}"
     printf 'ee_compiler_version=%s\n' "$compiler_version"
     printf 'built_utc=%s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-    printf 'verification=build-only-gameplay-pending\n'
+    printf 'verification=build-and-bootstrap-layout-gameplay-pending\n'
   } > psxcore-build.txt.tmp
   mv psxcore-build.txt.tmp psxcore-build.txt
 )
