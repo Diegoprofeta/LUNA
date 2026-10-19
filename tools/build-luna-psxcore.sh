@@ -11,6 +11,7 @@ build_dir="${LUNA_BUILD_DIR:-$frontend/build-psxcore}"
 emulator_build="${LUNA_EMULATOR_OPTION:-ON}"
 development="${LUNA_PSXCORE_DEVELOPMENT:-OFF}"
 runtime_elf="${LUNA_PSXCORE_RUNTIME_ELF:-}"
+igr_return_path="${LUNA_PSXCORE_RETURN_PATH:-mc0:/APP_LUNA/luna.elf}"
 
 if [ ! -f "$core/Makefile" ]; then
   echo "Initialize the psxcore submodule before building." >&2
@@ -53,7 +54,8 @@ if [ -z "$runtime_elf" ]; then
     sh "$workspace/tools/fetch-psxcore-drivers.sh" "$NP_BDMA_MODULE_DIR"
     export NP_BDMA_MODULE_DIR
   fi
-  make -C "$core" runtime
+  make -C "$core" runtime NP_IGR_RETURN=1 NP_CD_SWAP=1 \
+    NP_IGR_RETURN_PATH="$igr_return_path"
   runtime_elf="$core/build/runtime/psxcore.elf"
   if [ ! -f "$runtime_elf" ]; then
     runtime_elf="$core/build/runtime/psxcore-runtime-bootstrap.elf"
@@ -91,6 +93,9 @@ compiler_version="$("$PS2DEV/ee/bin/mips64r5900el-ps2-elf-gcc" -dumpfullversion)
   {
     printf 'psxcore_revision=%s\n' "$core_revision"
     printf 'runtime_source=%s\n' "$runtime_source"
+    if [ "$runtime_source" = matching-checkout ]; then
+      printf 'igr_return=ON\ndisc_swapping=ON\nigr_return_path=%s\n' "$igr_return_path"
+    fi
     printf 'frontend_revision=%s\nfrontend_dirty=%s\n' "$frontend_revision" "$frontend_dirty"
     printf 'emulator_build=%s\ndevelopment=%s\n' "$emulator_build" "$development"
     sdk_revision="$(git -c safe.directory="$PS2SDK" -C "$PS2SDK" rev-parse HEAD 2>/dev/null || printf unavailable)"
