@@ -1,27 +1,22 @@
 <p align="center">
   <img src="assets/luna-logo.svg" alt="LUNA logo" width="700">
+  <br>
+  <sub>LIMEN UMBRAE NEXUS ARCANUM</sub>
 </p>
 
-<p align="center"><strong>LIMEN UMBRAE NEXUS ARCANUM</strong></p>
+LUNA is a modern visual game launcher for the PlayStation 2, built on
+[NHDDL](https://github.com/pcm720/nhddl). Browse PS2 and PS1 games in one
+library, choose your launch engine, manage saves, and make the interface your own.
 
-LUNA is a modern visual game launcher for the PlayStation 2, built on [NHDDL](https://github.com/pcm720/nhddl). Designed to bring a polished,
-console-like experience, LUNA combines game discovery, library management, and multiple launch engines into one lightweight, unified interface.
-
-With support for [Neutrino](https://github.com/rickgaiser/neutrino) and [OPL](https://github.com/ps2homebrew/Open-PS2-Loader), LUNA gives you the freedom to choose how your PS2 games are launched,
-while experimental PlayStation 1 integration through [PSXCore](https://github.com/dnunezx/PSXCore) brings another generation of games into the same library.
-
-Browse your collection in
-five library views, choose Neutrino or OPL for PS2 games, manage virtual memory
-cards, and customize the interface around your library.
-
-Experimental PS1 integration brings PlayStation games into the same library
+PS2 games launch through [Neutrino](https://github.com/rickgaiser/neutrino) or
+[OPL](https://github.com/ps2homebrew/Open-PS2-Loader). PS1 games launch
 through [PSXCore](https://github.com/dnunezx/PSXCore).
 
-> **PSXCore is in early development. IGR and multi-disc swapping are not yet functional**
 
 PSXCore is an in-house, open-source project developed specifically for LUNA as an alternative to POPStarter.
 It was born from the need for a dedicated PlayStation 1 solution that could be actively maintained, updated, and improved over time.
-Development has already seen major breakthroughs in game compatibility, with significant progress on games previously thought to be broken or incompatible, including DOOM, Skullmonkeys, Duke Nukem, Parasite Eve II, and many more.
+Development has already seen major breakthroughs in game compatibility, with significant progress on games previously thought to be broken or incompatible, and now has disc-set management,
+in-game disc swapping, and in-game return.
 
 
 ## Library views
@@ -94,8 +89,9 @@ A PSXCore-enabled installation also needs `psxcore-runtime-bootstrap.elf`
 beside `neutrino.elf`. Use the matching runtime files supplied for your build.
 
 For memory-card slot 2, use `mc1:/APP_LUNA/luna.elf` and change `return_path`
-in `luna.yaml` to match. Memory-card installation is required for LUNA's
-configured Neutrino in-game return path.
+in `luna.yaml` to match for the PS2 launch engines. PSXCore's IGR return target
+is set in its runtime build, so its destination must also match your installation.
+Changing `luna.yaml` alone does not change PSXCore's return target.
 
 ### Optional ambient music
 
@@ -126,27 +122,98 @@ An existing OPL library can retain its title-ID artwork conventions.
 Connect storage before launching LUNA; live insertion and removal are not
 supported by the Storage Devices menu.
 
-### Experimental PS1 setup
+### PlayStation setup
 
-**PSXCore is in early development.** PS1 discovery and launch preparation are
-currently integrated for internal ATA drives.
-This does not establish compatibility for every PS1 game or storage setup.
-
-Place compatible PS1 `.VCD` images in `VCD/`. The game drive must also contain
-the exact firmware files accepted by the bundled PSXCore version:
+PS1 discovery and launch preparation support **internal ATA and USB drives**.
+Place compatible `.VCD` images in `VCD/` on the game drive. Supply the exact
+firmware files accepted by the bundled PSXCore version on that same drive:
 
 ```text
 /POPS/POPS.ELF
 /POPS/IOPRP252.IMG
 ```
 
-Sony's POPS runtime is proprietary and **is not included**. Supply these files
-separately. LUNA checks their size and SHA-256 before handing the game to
-PSXCore; missing or mismatched files produce an error in the frontend.
+Sony's POPS runtime is proprietary and **is not included**. LUNA checks the
+firmware's size and SHA-256 before launch and reports missing or mismatched files.
+Keep `psxcore-runtime-bootstrap.elf` beside `neutrino.elf` in `APP_LUNA`.
 
 Press **L3** to choose Mix or PS1, select a game, and press **Cross**.
-The default shared card pair is created when missing. Games using that pair
-share its save space; cards are not automatically isolated per game.
+Missing default cards are created automatically. The default pair is shared;
+choose a named pair in the game's memory-card settings for separate saves.
+
+### Multi-disc games
+
+A disc set combines **two to four VCD images** into one library entry. Keep
+every image on the same drive and arrange them in the game's disc order.
+
+#### Create a set in LUNA
+
+1. Highlight one of the game's discs and open **Triangle → Game → Discs**.
+2. Select **Manage discs**. LUNA can suggest nearby images with matching
+   names such as `Game (Disc 1).VCD` and `Game (Disc 2).VCD`.
+3. Check the suggestion. Use **Add disc** for missing images. Select an entry
+   to **Move earlier**, **Move later**, or **Remove disc**. The first entry is Disc 1.
+4. Choose **Save disc set**, enter a name when creating a new set, and confirm.
+   LUNA saves an `.m3u` playlist and refreshes the library. If prompted, refresh
+   the drive through **Start → Storage Devices**.
+5. Highlight the grouped entry. Under **Game → Discs → Start disc**, choose
+   the disc to boot and press **Start** to save. Return to the library and press
+   **Cross** to launch.
+
+Save any pending game settings with **Start** before opening **Manage discs**.
+Filename suggestions need your confirmation; matching names alone do not create a set.
+Valid sets appear once in the library, with their individual disc entries hidden.
+
+#### Create a playlist on your computer
+
+Place the `.m3u` file alongside the game's VCD images in `VCD/`. List one
+image per line in disc order, without quotation marks:
+
+```text
+/VCD/
+  Example Game.m3u
+  Example Game (Disc 1).VCD
+  Example Game (Disc 2).VCD
+```
+
+Contents of `Example Game.m3u`:
+
+```m3u
+Example Game (Disc 1).VCD
+Example Game (Disc 2).VCD
+```
+
+Relative paths resolve from the playlist's folder. Paths must stay on the same
+drive. Rescan the drive after adding or changing a playlist. Keep each image in
+one set; overlapping playlists, missing images, and duplicate discs are rejected.
+LUNA-created playlists include an identity line; preserve it when editing them.
+
+#### Swap discs during play
+
+Launch the **grouped entry** so PSXCore receives the complete set. When the
+game asks you to change discs, use controller port 1:
+
+| Hold together | Selects |
+| --- | --- |
+| **L2 + R2 + Select + Up** | Disc 1 |
+| **L2 + R2 + Select + Right** | Disc 2 |
+| **L2 + R2 + Select + Down** | Disc 3 |
+| **L2 + R2 + Select + Left** | Disc 4 |
+
+Release all buttons before entering a shortcut, then release them again after
+selecting the disc so the swap can finish. Follow the game's on-screen prompts.
+Only discs registered in the launched set are available. These shortcuts follow
+[PSXCore's disc-swap controls](https://github.com/dnunezx/PSXCore/blob/e4218a478c93caac4c868aed6f3451540db6a03e/runtime/cdswap.c).
+This changes the disc
+in the running game; it does not launch an unrelated game from your library.
+
+All discs use the set's selected memory-card pair. Choose a named pair before
+playing if you want the set to have its own saves.
+
+LUNA reads the complete images to validate a set before launch, which can take
+time. If you intentionally replace an image and LUNA reports changed content,
+open **Manage discs**, select that image, and choose **Revalidate image**.
+Confirm the replacement; the next launch checks and records its current content.
 
 ## Controls
 
@@ -170,10 +237,24 @@ While holding **R1**, use **Cross** to toggle the Favorites filter,
 
 ### In-game return
 
-LUNA offers IGR to Neutrino and OPL,  hold
-**L1 + L2 + R1 + R2 + Start + Select** for roughly one second to return to
-the configured LUNA ELF.
-PSXCore's IGR is currently not working
+Use the familiar LUNA combination:
+
+**L1 + L2 + R1 + R2 + Start + Select**
+
+- **PS2 / Neutrino or OPL:** hold the combination for roughly one second to
+  return to the configured LUNA ELF. Leave IGR enabled in the game's settings.
+- **PS1 / an IGR-enabled PSXCore runtime:** use the same combination to open
+  the native in-game menu, then confirm **Quit** to load the runtime's return ELF.
+  A runtime configured to return to LUNA needs that ELF at its expected memory-card path.
+
+Finish saving before returning. PSXCore's return destination is supplied by its
+runtime build and is independent of LUNA's `return_path` setting.
+
+**Runtime availability:** the current upstream PSXCore source builds native
+disc swapping and IGR return as separate configurations. A disc-swapping runtime
+does not automatically include IGR. Use a package that explicitly provides the
+feature you need. See [PSXCore's runtime source](https://github.com/dnunezx/PSXCore/blob/e4218a478c93caac4c868aed6f3451540db6a03e/runtime/main.c)
+and [IGR return implementation](https://github.com/dnunezx/PSXCore/blob/e4218a478c93caac4c868aed6f3451540db6a03e/runtime/igrreturn.h).
 
 ## Game settings
 
@@ -190,8 +271,11 @@ Press **Start** to save changes.
 - **Cheats:** select entries from `CHT/<TITLE_ID>.cht`, enable cheats, and save.
   Cheats are off by default. This path uses raw PS2RD codes and the matching
   LUNA Neutrino runtime; encrypted cheat files are not supported.
-- **Appearance:** choose backgrounds, glass tint, fonts, PS1 case style,
-  List artwork layout, and Ambient Orbs colors and formations.
+- **PS1 compatibility:** open **Game → Compatibility → Code Validation**
+  if a title fails to boot or shows a black screen. It is off by default;
+  enable it for the affected game and press **Start** to save.
+- **PS1 discs:** use **Game → Discs** to manage a set or select its starting disc.
+  These options apply to PlayStation games.
 
 
 ## Virtual memory cards
@@ -239,14 +323,58 @@ MX4SIO, MMCE, iLink, or UDPFS. Toggle sources and choose
 all enabled devices. MX4SIO and MMCE cannot be selected together. UDPFS needs
 Ethernet and a running server; its console-IP setting is the PS2's address.
 
-**Start → File Explorer** opens a two-pane browser for storage and memory
-cards. Copy or move marked items, create folders, rename files, and inspect
-details. Transfers show progress and offer Skip, Keep Both, or Replace when
-names conflict. Moves verify copied data before removing the source.
+### File Explorer
+
+Open **Start → File Explorer** to browse available storage and memory cards.
+The browser keeps your marked items in a copy tray while you choose a destination.
+
+| Button | Explorer action |
+| --- | --- |
+| **Cross** | Open a folder, preview supported text, or confirm a homebrew ELF launch. |
+| **Circle** | Go up one folder; leave Explorer from the device list. |
+| **L1** | Return to the device list. |
+| **Square** | Mark or unmark an item in the tray. |
+| **Triangle** | Open actions for the selected item. |
+| **R2** | Open folder and tray actions. |
+| **R1** | Expand or collapse a populated tray. |
+| **Start** | Copy the tray to the current folder, or move it after choosing a Move action. |
+| **Select** | Clear the tray after confirmation. |
+| **Hold L2 + Up / Down** | Move a page at a time. |
+
+To copy files, mark them with **Square**, open the destination folder, and
+press **Start**. For a move, choose the appropriate **Move** action first,
+then open the destination and press **Start**. Transfers show progress and offer
+**Skip**, **Keep Both**, or **Replace** for name conflicts. Moves verify copied
+data before removing the source.
+
+Context menus also offer folder creation, rename, deletion, file and folder
+details, name filtering, and sorting by name, size, or date. Supported text and
+configuration files open in a read-only preview. Compatible PS2 homebrew `.elf`
+files can launch directly after confirmation.
+
+### Language and system actions
 
 **Start → Language** selects English, Español, or Português (Brazilian
 Portuguese). The preference applies immediately and is saved beside LUNA.
 The main menu also offers **Exit LUNA** and **Shutdown**.
+
+## Make LUNA your own
+
+Open **Triangle → Global → Background** to choose Stars & cubes, Ambient Orbs,
+Red Clouds, Midnight Cubes, System Configuration, Neo, Aurora, Ronin,
+Gridrunner, Torch, or Tempest. Choose a glass color and font on the same page,
+then press **Start** to save.
+
+Under **Options → Views**, enable the views you want in the **Circle** cycle.
+The **View appearance** section contains:
+
+- **List art layout:** Separate or Overlap for the cover and disc artwork.
+- **PS1 case style:** Jewel case or Tall in List and 3D. PS2 covers retain
+  their tall cases.
+
+Select Ambient Orbs as the background to customize its theme, light appearance,
+colors, trails, and enabled shapes in **Options → Orbs**. Press **Start** to
+save your changes.
 
 ## Artwork and saved preferences
 
@@ -289,7 +417,7 @@ for help with ambient orbs, **[aap](https://github.com/aap/osdbits)** for OSDSYS
 reverse engineering, and all LUNA beta testers.
 
 See [AUTHORS.md](AUTHORS.md), [UPSTREAM.md](UPSTREAM.md), and
-the preserved licenses in `LICENSES/` for attribution and source lineage.
+the preserved licenses in [LICENSES](LICENSES/) for attribution and source lineage.
 Original LUNA code and modifications: **Danny Nunez (dnunezx), 2026**.
 Games, Sony firmware, and proprietary POPS runtime files are not distributed
 in this source repository.
