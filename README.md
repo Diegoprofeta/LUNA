@@ -5,8 +5,7 @@
 </p>
 
 LUNA is a modern visual game launcher for the PlayStation 2, built on
-[NHDDL](https://github.com/pcm720/nhddl). Browse PS2 and PS1 games in one
-library, choose your launch engine, manage saves, and make the interface your own. Designed to bring a polished,
+[NHDDL](https://github.com/pcm720/nhddl). Designed to bring a polished,
 console-like experience, LUNA combines game discovery, library management, and multiple launch engines into one lightweight, unified interface.
 
 PS2 games launch through [Neutrino](https://github.com/rickgaiser/neutrino) or
