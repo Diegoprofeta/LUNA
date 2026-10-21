@@ -25,7 +25,7 @@ $archive = Join-Path $dist $archiveName
 
 $launcher = Join-Path $dist $launcherName
 $launcherConfig = Join-Path $workspace 'nhddl/examples/luna.yaml'
-$ambientAsset = Join-Path $workspace 'nhddl/assets/ambient.wav'
+$ambientAsset = Join-Path $workspace 'nhddl/assets/ambient.adp'
 $ambientInstructions = Join-Path $workspace 'tools/ambient-music-addon.txt'
 $neutrinoRoot = Join-Path $workspace 'neutrino/ee/loader'
 $oplPayloadRoot = Join-Path $workspace 'build-opl-core'
@@ -62,7 +62,7 @@ if (Test-Path -LiteralPath $package) {
 
 New-Item -ItemType Directory -Path $app -Force | Out-Null
 New-Item -ItemType Directory -Path $ambientAddon -Force | Out-Null
-Copy-Item -LiteralPath $ambientAsset -Destination (Join-Path $ambientAddon 'ambient.wav')
+Copy-Item -LiteralPath $ambientAsset -Destination (Join-Path $ambientAddon 'ambient.adp')
 Copy-Item -LiteralPath $ambientInstructions -Destination (Join-Path $ambientAddon 'INSTALL.txt')
 Copy-Item -LiteralPath $launcher -Destination (Join-Path $app 'luna.elf')
 Copy-Item -LiteralPath $launcherConfig -Destination (Join-Path $app 'luna.yaml')
