@@ -21,7 +21,9 @@ $builds = @(
     @{ Directory = 'modules/iopcore/resetspu'; Options = @() }
 )
 foreach ($build in $builds) {
-    & docker run --rm -v $mount $Image make -C "/src/$($build.Directory)" @($build.Options) all
+    & docker run --rm -v $mount $Image make -C "/src/$($build.Directory)" @($build.Options) DEBUG=0 EESIO_DEBUG=0 IOPCORE_DEBUG=0 LOAD_DEBUG_MODULES=0 DECI2_DEBUG=0 clean
+    if ($LASTEXITCODE -ne 0) { throw "OPL clean failed: $($build.Directory)" }
+    & docker run --rm -v $mount $Image make -C "/src/$($build.Directory)" @($build.Options) DEBUG=0 EESIO_DEBUG=0 IOPCORE_DEBUG=0 LOAD_DEBUG_MODULES=0 DECI2_DEBUG=0 all
     if ($LASTEXITCODE -ne 0) { throw "OPL build failed: $($build.Directory)" }
 }
 New-Item -ItemType Directory -Path $outputRoot -Force | Out-Null

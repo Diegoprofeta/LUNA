@@ -9,8 +9,16 @@ frontend="${LUNA_FRONTEND:-$workspace/nhddl}"
 core="$workspace/psxcore"
 build_dir="${LUNA_BUILD_DIR:-$frontend/build-psxcore}"
 emulator_build="${LUNA_EMULATOR_OPTION:-ON}"
-development="${LUNA_PSXCORE_DEVELOPMENT:-OFF}"
-runtime_elf="${LUNA_PSXCORE_RUNTIME_ELF:-}"
+development=OFF
+if [ "${LUNA_PSXCORE_DEVELOPMENT:-OFF}" != OFF ] || [ -n "${LUNA_PSXCORE_RUNTIME_ELF:-}" ]; then
+  echo "Development launch tools are local-only; use the local diagnostics rebuild instructions." >&2
+  exit 1
+fi
+if grep -Eq 'collectionArtStats|decodePNGTextureRGBATimed|DPRINTF\(' "$frontend/src/ui/art_cache.c"; then
+  echo "Local diagnostic sources are restored; production builds require the clean production sources." >&2
+  exit 1
+fi
+runtime_elf=
 igr_return_path="${LUNA_PSXCORE_RETURN_PATH:-mc0:/APP_LUNA/luna.elf}"
 
 if [ ! -f "$core/Makefile" ]; then
@@ -20,10 +28,6 @@ fi
 mkdir -p "$build_dir"
 # Only a completed build publishes provenance; failed updates retain no success stamp.
 rm -f "$build_dir/psxcore-build.txt" "$build_dir/psxcore-build.sha256"
-if [ -n "$runtime_elf" ] && [ "$development" != ON ]; then
-  echo "An external reference ELF requires LUNA_PSXCORE_DEVELOPMENT=ON." >&2
-  exit 1
-fi
 core_git() { git -c safe.directory="$core" -C "$core" "$@"; }
 core_revision="$(core_git rev-parse HEAD)"
 core_status="$(core_git status --porcelain)"
@@ -46,21 +50,18 @@ fi
 sh "$workspace/tools/bootstrap-ps2-libtiff.sh"
 
 # Consume PSXCore's standalone ELF without editing its runtime or SDK modules.
-# A supplied ELF allows direct and frontend tests to use exactly the same bytes.
-runtime_source=external-reference-unverified
-if [ -z "$runtime_elf" ]; then
-  if [ -z "${NP_BDMA_MODULE_DIR:-}" ]; then
-    NP_BDMA_MODULE_DIR="$build_dir/psxcore-drivers"
-    sh "$workspace/tools/fetch-psxcore-drivers.sh" "$NP_BDMA_MODULE_DIR"
-    export NP_BDMA_MODULE_DIR
-  fi
-  make -C "$core" runtime NP_IGR_RETURN=1 NP_CD_SWAP=1 \
-    NP_IGR_RETURN_PATH="$igr_return_path"
-  runtime_elf="$core/build/runtime/psxcore.elf"
-  if [ ! -f "$runtime_elf" ]; then
-    runtime_elf="$core/build/runtime/psxcore-runtime-bootstrap.elf"
-  fi
-  runtime_source=matching-checkout
+# Build the runtime from the matching checkout for production provenance.
+runtime_source=matching-checkout
+if [ -z "${NP_BDMA_MODULE_DIR:-}" ]; then
+  NP_BDMA_MODULE_DIR="$build_dir/psxcore-drivers"
+  sh "$workspace/tools/fetch-psxcore-drivers.sh" "$NP_BDMA_MODULE_DIR"
+  export NP_BDMA_MODULE_DIR
+fi
+make -C "$core" runtime NP_IGR_RETURN=1 NP_CD_SWAP=1 \
+  NP_IGR_RETURN_PATH="$igr_return_path"
+runtime_elf="$core/build/runtime/psxcore.elf"
+if [ ! -f "$runtime_elf" ]; then
+  runtime_elf="$core/build/runtime/psxcore-runtime-bootstrap.elf"
 fi
 if [ ! -f "$runtime_elf" ]; then
   echo "Standalone PSXCore ELF is missing: $runtime_elf" >&2
@@ -68,6 +69,7 @@ if [ ! -f "$runtime_elf" ]; then
 fi
 cmake -S "$frontend" -B "$build_dir" \
   -DCMAKE_BUILD_TYPE=Release \
+  -DENABLE_PRINTF=OFF \
   -DLUNA_EMULATOR_BUILD="$emulator_build" \
   -DLUNA_ENABLE_PSXCORE=ON \
   -DLUNA_PSXCORE_DEVELOPMENT="$development" \
