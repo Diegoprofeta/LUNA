@@ -97,3 +97,6 @@ Thumbs.db
 *.p12
 .env
 .env.*
+
+# Local translation workbooks
+/outputs/slovak-translation/
