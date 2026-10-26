@@ -1,0 +1,83 @@
+name: Build work artifact
+run-name: LUNA work build · ${{ github.sha }}
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: luna-work-artifact-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    env:
+      BUILD_IMAGE: ps2max/dev@sha256:e390699d46818e7c736f414ae5b1789d3ef7d3d914ce646a8a7bd027bd7e4521
+    steps:
+      - name: Check out the selected revision and pinned dependencies
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          fetch-depth: 0
+          submodules: recursive
+          persist-credentials: false
+
+      - name: Record source revisions
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p output
+          {
+            printf 'luna=%s\n' "$(git rev-parse HEAD)"
+            for component in nhddl neutrino opl psxcore; do
+              printf '%s=%s\n' "$component" "$(git -C "$component" rev-parse HEAD)"
+            done
+            printf 'build_image=%s\n' "$BUILD_IMAGE"
+          } > output/SOURCE-REVISIONS.txt
+
+      - name: Build Neutrino and its runtime modules
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker run --rm -v "$PWD:/workspace" "$BUILD_IMAGE" sh -eu -c '
+            git config --global --add safe.directory /workspace/neutrino
+            make -C /workspace/neutrino -j2 all EESIO_DEBUG=0 IOPCORE_DEBUG=0
+            make -C /workspace/neutrino copy copy_extra
+          '
+
+      - name: Build the pinned OPL runtime
+        shell: pwsh
+        run: ./tools/build-opl-core.ps1 -Image $env:BUILD_IMAGE
+
+      - name: Build the hardware frontend and unchanged PSXCore runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker run --rm -v "$PWD:/workspace" \
+            -e LUNA_BUILD_IMAGE="$BUILD_IMAGE" "$BUILD_IMAGE" sh -eu -c '
+              export LUNA_BUILD_DIR=/workspace/nhddl/build-work-artifact
+              export LUNA_EMULATOR_OPTION=OFF
+              export LUNA_PSXCORE_DEVELOPMENT=OFF
+              sh /workspace/tools/build-luna-psxcore.sh
+            '
+
+      - name: Assemble and validate the downloadable files
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          New-Item -ItemType Directory -Path dist -Force | Out-Null
+          Copy-Item -LiteralPath nhddl/build-work-artifact/luna.elf -Destination dist/LUNA-Release-Candidate.elf
+          ./tools/package-fmcb.ps1 -PsxcoreBuildDirectory nhddl/build-work-artifact
+          Copy-Item -LiteralPath dist/LUNA-FMCB-mc0.zip, dist/SHA256SUMS.txt -Destination output
+          "Built the pinned source revisions as a GitHub Actions artifact. No release or tag was created. Gameplay remains untested." >> $env:GITHUB_STEP_SUMMARY
+
+      - name: Upload the work artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: LUNA-work-build-${{ github.run_number }}
+          path: output/*
+          if-no-files-found: error
+          retention-days: 30
