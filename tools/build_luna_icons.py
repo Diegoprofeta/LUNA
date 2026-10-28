@@ -1,4 +1,4 @@
-"""Build LUNA's button atlas and the embedded copy used by the PS2 UI."""
+"""Build LUNA's button and brand atlas and its embedded PS2 UI copy."""
 
 from pathlib import Path
 import re
@@ -35,6 +35,13 @@ def main() -> None:
         icon = Image.open(LUNA_PROMPTS / f"{name}.png").convert("RGBA")
         atlas.paste(icon, (x, 56))
     ImageDraw.Draw(atlas).ellipse((81, 56, 90, 65), fill=(0, 184, 209, 255))
+    # The official wordmark fits below the controls without enlarging the atlas.
+    logo = Image.open(ROOT / "nhddl/res/gfx/luna-logo-white.png").convert("RGBA")
+    logo = logo.resize((112, 17), Image.Resampling.LANCZOS)
+    # Keep transparent RGB white so filtering cannot darken the thin strokes.
+    logo_white = Image.new("RGBA", logo.size, (255, 255, 255, 0))
+    logo_white.putalpha(logo.getchannel("A"))
+    atlas.paste(logo_white, (0, 111))
     atlas.save(ATLAS)
 
     data = ATLAS.read_bytes()
