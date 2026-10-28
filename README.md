@@ -403,21 +403,60 @@ are saved beside the LUNA executable. PS1 card selections live under
 | [`opl/`](https://github.com/dnunezx/Open-PS2-Loader) | Alternate PS2 launch integration. |
 | [`psxcore/`](https://github.com/dnunezx/PSXCore) | Independently maintained, experimental PS1 dependency in early development. |
 
-Initialize the pinned dependencies with `git submodule update --init --recursive`.
-PSXCore is consumed unchanged; LUNA-specific integration belongs in LUNA.
+### Credits and acknowledgements
 
-Special thanks to **Ivan V ([pcm720](https://github.com/pcm720))** for NHDDL,
-**Rick Gaiser ([Maximus32](https://github.com/ps2max32))** for Neutrino,
-and the **Open PS2 Loader contributors**.
+LUNA builds on years of work by the PlayStation 2 homebrew community.
 
-Thanks to **[CosmicScale](https://github.com/CosmicScale)** and the
-**[PSBBN Definitive Project](https://github.com/CosmicScale/PSBBN-Definitive-Project)**
-for design inspiration and assets, **[NathanNeurotic (Ripto)](https://github.com/NathanNeurotic)**
-for help with ambient orbs, **[aap](https://github.com/aap/osdbits)** for OSDSYS
-reverse engineering, and all LUNA beta testers.
+**LUNA and PSXCore:** Danny Nunez ([dnunezx](https://github.com/dnunezx)), 2026. Existing upstream authorship and license notices remain with their respective projects.
 
-See [AUTHORS.md](AUTHORS.md), [UPSTREAM.md](UPSTREAM.md), and
-the preserved licenses in [LICENSES](LICENSES/) for attribution and source lineage.
-Original LUNA code and modifications: **Danny Nunez (dnunezx), 2026**.
-Games, Sony firmware, and proprietary POPS runtime files are not distributed
-in this source repository.
+**NHDDL:** Ivan V ([pcm720](https://github.com/pcm720)), whose [NHDDL](https://github.com/pcm720/nhddl) provides the foundation for LUNA’s frontend.
+
+**Neutrino:** Rick Gaiser (Maximus32 / [ps2max32](https://github.com/ps2max32)) and contributors, for the [Neutrino](https://github.com/ps2max32/neutrino) game runtime and associated driver work, including network transports and MX4SIO contributions.
+
+### Open PS2 Loader
+
+Special thanks to **[Ifcaro](https://github.com/ifcaro) and [jimmikaelkael](https://github.com/jimmikaelkael)**, OPL’s original developers, and **[Polo / polo35](https://github.com/ps2homebrew/Open-PS2-Loader/blob/master/CREDITS)**, whose HD Project formed its original code foundation.
+
+We also acknowledge **[volca, izdubar, hominem.te.esse, BatRastard, crazyc, dlanor, doctorxyz, and reprep](https://github.com/ps2homebrew/Open-PS2-Loader/blob/master/CREDITS)**; **[belek666](https://github.com/belek666)**; the contributors credited elsewhere in this section; and the wider OPL development, testing, and maintenance community.
+
+LUNA uses OPL game-core code and preserves its upstream attribution.
+
+**Active upstream:** [Open PS2 Loader — ps2homebrew](https://github.com/ps2homebrew/Open-PS2-Loader)
+
+**Full acknowledgements:** [Official OPL credits](https://github.com/ps2homebrew/Open-PS2-Loader/blob/master/CREDITS)
+
+### Drivers, filesystems, and libraries
+
+**[ps2dev / PS2SDK contributors:](https://github.com/ps2dev/ps2sdk)** The development foundation and drivers for storage, filesystems, controllers, memory cards, networking, and audio.
+
+**[Marcus R. Brown:](https://github.com/ps2homebrew/Open-PS2-Loader/blob/master/CREDITS)** Original DEV9 and ATAD driver work and related code inherited through PS2SDK and OPL.
+
+**[SP193:](https://github.com/sp193)** iLink driver work, alongside contributions to OPL and PS2SDK.
+
+**[MMCE authors and contributors:](https://github.com/ps2-mmce/mmceman)** MMCEMAN and the MMCE driver family used for compatible memory-card devices.
+
+**[Wisi:](https://github.com/wisi-w)** SIO2 research and documentation, and original MX4SIO work.
+
+**[ChaN — FatFs:](https://elm-chan.org/fsw/ff/)** The FAT/exFAT filesystem library used through PS2SDK.
+
+**[Mathias Lafeldt (misfire):](https://github.com/mlafeldt)** Cheat-engine code inherited through Neutrino and OPL, and OPL contributions.
+
+**[gsKit / dmaKit contributors:](https://github.com/ps2dev/gsKit)** Graphics and DMA libraries.
+
+**[libpng](https://www.libpng.org/pub/png/libpng.html), [zlib](https://zlib.net/), and [libtiff](https://libtiff.gitlab.io/libtiff/) contributors:** Image and compression libraries used by LUNA’s graphics dependencies.
+
+### Design, assets, and community
+
+**[CosmicScale](https://github.com/CosmicScale) and the [PSBBN Definitive Project:](https://github.com/CosmicScale/PSBBN-Definitive-Project)** Design inspiration and assets.
+
+**[NathanNeurotic (Ripto):](https://github.com/NathanNeurotic)** Help with ambient orbs.
+
+**[aap:](https://github.com/aap/osdbits)** OSDSYS reverse engineering.
+
+**[Kenney:](https://www.kenney.nl/)** CC0 input-prompt assets.
+
+Thank you to all LUNA beta testers and the wider PS2 homebrew community.
+
+See [AUTHORS.md](https://github.com/dnunezx/LUNA/blob/main/AUTHORS.md), [UPSTREAM.md](https://github.com/dnunezx/LUNA/blob/main/UPSTREAM.md), the preserved licenses in [LICENSES](https://github.com/dnunezx/LUNA/tree/main/LICENSES), and individual dependency notices for further attribution and source lineage.
+
+Games, Sony firmware, and proprietary POPS runtime files are not distributed in this source repository.
