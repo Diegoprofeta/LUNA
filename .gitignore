@@ -26,6 +26,7 @@ dist/
 
 # Local emulation and test assets
 /emulation/
+/mass[0-9]*/
 /neutrino/lab/
 /tests/
 /test-data/
