@@ -4,8 +4,7 @@
   <sub>LIMEN UMBRAE NEXUS ARCANUM</sub>
 </p>
 
-<details>
-<summary><strong>0x001 // S̷y̸s̶t̷e̸m̶</strong></summary>
+**0x001 // S̷y̸s̶t̷e̸m̶**
 
 
 
@@ -14,8 +13,6 @@ L̷UN̷A is m̷o̷re than w̶hat̷ it a̶ppears̸ to b̸e.  Built u̶po̷n [NHDD
 P̶S̶2 games l̶au̶n̸ch through [Neutrino](https://github.com/rickgaiser/neutrino) or [O̶P̸L](https://github.com/ps2homebrew/Open-PS2-Loader). PS1 g̶ames̷ launch t̸hr̸ou̷gh̸ [P̶SX̸Co̶re̷](https://github.com/dnunezx/PSXCore).
 
 <sub>S̷o̸m̵e̷ s̸e̷c̵r̸e̷t̵s̶ w̷e̸r̵e̷ n̸e̷v̵e̸r̷ m̵e̷a̸n̷t̶ t̸o̷ b̵e̶ f̷o̸u̵n̷d̸.</sub>
-
-</details>
 
 <details>
 <summary><strong>0x01 // Library v̶ie̶w̸s</strong></summary>
