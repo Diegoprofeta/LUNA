@@ -1,0 +1,19 @@
+{
+  "nhddl": {
+    "url": "https://github.com/dnunezx/nhddl-luna.git",
+    "revision": "1c97889d34cecf580e20c5c8f2bbb48e92bb50a0",
+    "recursive": true
+  },
+  "neutrino": {
+    "url": "https://github.com/dnunezx/neutrino-luna.git",
+    "revision": "fff99d9828c287a7328958668ecd25b1f17ea601"
+  },
+  "opl": {
+    "url": "https://github.com/dnunezx/Open-PS2-Loader.git",
+    "revision": "c533f939195847df1cd4d905f089aeb07300c72e"
+  },
+  "psxcore": {
+    "url": "https://github.com/dnunezx/PSXCore.git",
+    "revision": "5d4de02f57933f70c48335d938c1d4c8b69634ad"
+  }
+}

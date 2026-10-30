@@ -18,12 +18,14 @@ jobs:
     env:
       BUILD_IMAGE: ps2max/dev@sha256:e390699d46818e7c736f414ae5b1789d3ef7d3d914ce646a8a7bd027bd7e4521
     steps:
-      - name: Check out the selected revision and pinned dependencies
+      - name: Check out the selected revision
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           fetch-depth: 0
-          submodules: recursive
           persist-credentials: false
+
+      - name: Fetch pinned build dependencies
+        run: python3 tools/fetch-dependencies.py
 
       - name: Record source revisions
         shell: bash
