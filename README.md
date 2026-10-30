@@ -4,12 +4,22 @@
   <sub>LIMEN UMBRAE NEXUS ARCANUM</sub>
 </p>
 
-L̷U̸N̵A̶ is more t̷han what it a̸ppears to be.  Built upon [N̷H̸DDL](https://github.com/pcm720/nhddl), it o̷ffers a different v̸ision for the P̷layStation 2. Rooted in f̸amiliar foundations yet d̷riven by unexplored p̸ossibilities, LUNA pushes b̷eyond the boundaries of its o̸riginal design. An e̷xperience that continues to e̸volve, revealing only what it c̷hooses to show.
+<details>
+<summary><strong>0x001 // S̷y̸s̶t̷e̸m̶</strong></summary>
+
+
+
+L̷UN̷A is m̷o̷re than w̶hat̷ it a̶ppears̸ to b̸e.  Built u̶po̷n [NHDDL](https://github.com/pcm720/nhddl), i̷t offers a̸ different v̶is̷i̷o̸n for t̶he̸ PlayStation 2̶. Rooted i̸n̶ familiar f̷ou̶ndatio̶ns yet d̸ri̶ven by u̶ne̸xplored possibilities, L̷UN̷A pushes b̸ey̷o̶nd̸ the b̶o̷u̷n̶d̷aries of i̷ts original d̶esi̸gn̶. An e̶xper̷i̷ence̸ that c̷onti̷n̸ues to e̸v̷olv̷e̶, revealing o̷n̶ly̶ what i̷t chooses t̷o show.
 
 P̶S̶2 games l̶au̶n̸ch through [Neutrino](https://github.com/rickgaiser/neutrino) or [O̶P̸L](https://github.com/ps2homebrew/Open-PS2-Loader). PS1 g̶ames̷ launch t̸hr̸ou̷gh̸ [P̶SX̸Co̶re̷](https://github.com/dnunezx/PSXCore).
 
 <sub>S̷o̸m̵e̷ s̸e̷c̵r̸e̷t̵s̶ w̷e̸r̵e̷ n̸e̷v̵e̸r̷ m̵e̷a̸n̷t̶ t̸o̷ b̵e̶ f̷o̸u̵n̷d̸.</sub>
-## 0x01 // Library v̶ie̶w̸s
+
+</details>
+
+<details>
+<summary><strong>0x01 // Library v̶ie̶w̸s</strong></summary>
+
 
 
 | View | E̷xp̷e̷ri̷e̷n̷ce |
@@ -21,7 +31,12 @@ P̶S̶2 games l̶au̶n̸ch through [Neutrino](https://github.com/rickgaiser/neut
 | S̶c̷rol̶l | A h̶orizon̶tal̶ logo s̸t̷ri̷p̶ above a̶ cover c̶aro̷u̸s̶el̶. Missing l̶o̷g̸o̶s fall b̸a̷c̸k̶ to t̶it̸l̶e̶ text. |
 
 
-## 0x02 // R̷equir̶e̶men̷ts̸
+
+</details>
+
+<details>
+<summary><strong>0x02 // R̷equir̶e̶men̷ts̸</strong></summary>
+
 
 - PlayStation 2: hardware t̷estin̶g̶ has b̸e̸e̸n performed o̸n a f̷a̸t PS2.
 - F̷r̸ee McBoot m̶emory card: e̸nough̶ space f̷or̷ the c̸omp̸le̸te `APP_LUNA` folder.
@@ -31,7 +46,12 @@ P̶S̶2 games l̶au̶n̸ch through [Neutrino](https://github.com/rickgaiser/neut
 
 O̸ther storage s̷ou̸rces are s̸elec̷table through S̶tar̸t → Storage D̸ev̸i̸c̸e̶s. Artwork p̶e̷rformance̷ on s̷lowe̷r devices c̶a̶n̶ affect n̷a̸vig̸at̶i̶on.
 
-## 0x03 // Installation
+
+</details>
+
+<details>
+<summary><strong>0x03 // Installation</strong></summary>
+
 
 T̸h̷e̶s̶e steps u̶se̷ a m̶emory card i̶n̸ slot 1 (`mc0:`), a w̷orki̸ng FMCB s̶etup, and a̶ USB d̸ri̷v̷e your P̶S̶2 can r̸e̸a̷d.
 
@@ -52,11 +72,21 @@ mc0:/APP_LUNA/
   modules/
 ```
 
-#### // Optional a̶mbi̷ent̶ music
+<details>
+<summary><strong>// Optional a̶mbi̷ent̶ music</strong></summary>
+
 
 I̷f̷ your r̶el̸ea̶s̷e̶ includes `Ambient-Music-Add-On`, c̸opy̶ its `ambient.wav` f̸il̸e into `APP_LUNA`. I̸t uses a̶b̶o̸u̸t 1.3 MB o̷f̸ additional c̷ard space. E̷n̸abl̷e̶ Options → G̷l̸ob̷al → Ambient s̷o̷u̸n̸d, then p̸r̶ess Start t̷o̷ save. L̸UNA also w̸ork̶s without t̶he music f̸il̸e.
 
-## 0x04 // Preparing y̷o̶u̷r̸ library
+
+</details>
+
+
+</details>
+
+<details>
+<summary><strong>0x04 // Preparing y̷o̶u̷r̸ library</strong></summary>
+
 
 ```text
 /CD/                         PS2 CD images
@@ -70,7 +100,9 @@ I̷f̷ your r̶el̸ea̶s̷e̶ includes `Ambient-Music-Add-On`, c̸opy̶ its `amb
 /LUNA/                       Library state and settings
 ```
 
-#### SYS_01 // PlayStation s̶etup
+<details>
+<summary><strong>SYS_01 // PlayStation s̶etup</strong></summary>
+
 
 PS1 d̷i̶s̷c̶o̶very and l̶au̶n̸ch preparation s̶up̷p̷ort internal A̸TA̸ and U̶SB drives. P̸l̷a̸ce compatible `.VCD` i̷mages̸ in `VCD/` o̸n the g̸ame drive. S̶u̷pp̷ly the e̶xact firmware f̷iles̸ accepted b̷y the b̸u̸ndl̷ed̷ PSXCore v̷ersi̶on̶ on t̷hat̸ same d̸ri̷v̷e:
 
@@ -85,13 +117,23 @@ Press L̸3 to c̸hoos̶e Mix o̸r PS1, s̸ele̶ct a g̸ame, and p̸r̶ess Cross.
 
 <a name="multi-disc-games"></a>
 
-#### SYS_02 // Multi-d̸isc games
+
+</details>
+
+<details>
+<summary><strong>SYS_02 // Multi-d̸isc games</strong></summary>
+
 
 A̷ disc s̶et combines t̸wo to f̶our̸ VCD i̷mages̸ into o̶ne library e̷n̶tr̸y. Keep e̷ve̶ry image o̸n the s̷am̶e drive a̸n̶d̸ arrange t̸hem̷ in t̶he game's̸ disc o̷rder.
 
 <a name="create-a-set-in-luna"></a>
 
-#### SYS_03 // Create a̶ set i̶n̸ LUNA
+
+</details>
+
+<details>
+<summary><strong>SYS_03 // Create a̶ set i̶n̸ LUNA</strong></summary>
+
 
 1. H̷ighli̸ght one o̷f̸ the g̸ame's d̶i̶scs̸ and o̸p̶en Triangle → G̶a̷m̷e̶ → Discs.
 2. S̸el̸ect Manage d̶i̶scs̸. LUNA c̶a̶n̶ suggest n̸earby̶ images w̶ith matching n̷am̶e̶s such a̶s `Game (Disc 1).VCD` and `Game (Disc 2).VCD`.
@@ -99,7 +141,12 @@ A̷ disc s̶et combines t̸wo to f̶our̸ VCD i̷mages̸ into o̶ne library e̷n
 4. C̶ho̷ose Save d̸isc set, e̶nter̶ a n̶am̶e when c̸re̸atin̷g a n̶e̸w set, a̸n̶d̸ confirm. L̸UNA saves a̶n̷ `.m3u` playlist a̸n̶d̸ refreshes t̶he library. I̷f̷ prompted, r̸ef̶r̷es̸h the d̸ri̷v̷e through S̶tar̸t → Storage D̸ev̸i̸c̸e̶s.
 5. Highlight t̶he grouped e̷n̶tr̸y. Under G̶a̷m̷e̶ → Discs → S̶tar̸t disc, c̸hoos̶e the d̸isc to b̶o̶ot and p̸r̶ess Start t̷o̷ save. R̷e̸t̸ur̸n to t̶he library a̸n̶d̸ press C̶ros̶s to l̶au̶n̸ch.
 
-#### SYS_04 // S̷wap discs d̶uri̶ng play
+
+</details>
+
+<details>
+<summary><strong>SYS_04 // S̷wap discs d̶uri̶ng play</strong></summary>
+
 
 L̶aunch̷ the g̷r̷o̶up̷ed entry s̶o PSXCore r̸ece̶i̶ve̶s̶ the c̸omp̸le̸te set. W̶hen the g̸ame asks y̷o̶u̸ to c̸ha̸nge discs, u̶se̷ controller p̷ort 1:
 
@@ -112,7 +159,15 @@ L̶aunch̷ the g̷r̷o̶up̷ed entry s̶o PSXCore r̸ece̶i̶ve̶s̶ the c̸omp�
 
 R̷e̶lease all b̷u̷tto̷n̶s̸ before e̸n̷ter̶in̸g a s̸hortcut̷, then r̶el̸ea̶s̷e̶ them a̷gai̶n after s̷e̶le̸ct̶in̸g the d̸isc so t̶he swap c̶a̶n̶ finish. F̷o̶l̸lo̷w the g̸ame's o̸n-screen p̶ro̸m̸p̷ts. Only d̶i̶scs̸ registered i̶n̸ the l̷au̶n̷ch̸ed set a̷re available. T̸h̷e̶s̶e shortcuts f̷ol̷lo̸w [PSXCore's̸ disc-s̷w̸ap controls](https://github.com/dnunezx/PSXCore). This c̸han̶g̶es the d̸isc in t̶he running g̸ame; it d̸o̸es̶ not l̶au̶n̸ch an u̶nr̸elated game f̶rom̷ your l̸i̶br̸a̶ry̶.
 
-## 0x05 // Controls
+
+</details>
+
+
+</details>
+
+<details>
+<summary><strong>0x05 // Controls</strong></summary>
+
 
 | B̸utt̸o̸n | Library a̶ction̸ |
 | --- | --- |
@@ -130,12 +185,19 @@ R̷e̶lease all b̷u̷tto̷n̶s̸ before e̸n̷ter̶in̸g a s̸hortcut̷, then r
 
 W̶hile̸ holding R̸1, use C̶ros̶s to t̸og̸gl̶e̷ the F̷a̶v̸orites filter, C̸i̶r̷cle to t̸og̸gl̶e̷ the s̸elect̷e̶d Favorite, T̸r̸i̶angl̸e for O̸ptio̶n̸s, L3 f̷or̷ the p̷latf̷orm filter, o̸r R3 f̷or̷ Orbit R̷an̷d̷o̷m Scan.
 
-### SYS_05 // I̸n-game r̶eturn
+<details>
+<summary><strong>SYS_05 // I̸n-game r̶eturn</strong></summary>
+
 
 ```text
 L1 + L2 + R1 + R2 + Start + Select
 ```
-### SYS_06 // P̶l̷a̸yS̸t̷at̷i̸on̸
+
+</details>
+
+<details>
+<summary><strong>SYS_06 // P̶l̷a̸yS̸t̷at̷i̸on̸</strong></summary>
+
 
 Use t̶he default s̸hare̷d cards o̸n the g̸ame drive, o̸r create a̸n̶d̸ assign a̶ named p̸air̷ through t̶he game's̸ memory-c̷ard settings. B̶oth slots f̷ol̷lo̸w the s̸elect̷e̶d pair. P̸re̶s̷s Start i̶n̸ game s̷ett̸in̷g̷s to s̸ave the a̷ssi̸gnmen̷t.
 
@@ -148,11 +210,24 @@ Use t̶he default s̸hare̷d cards o̸n the g̸ame drive, o̸r create a̸n̶d̸ 
 
 Each c̷ard is 128 KB. T̸h̷e manager s̸u̶p̷po̷rts import, e̶xpo̶rt̷, backups o̷f̸ both c̷ard̷s̷, and r̶e̶c̸ov̸e̶ry of i̶n̷terr̸upted card o̸pe̸rat̷i̷o̶n̷s̸. Importing i̷nto̸ a s̸hare̷d card a̸ffects̷ every g̸ame using i̸t. These m̷anagemen̶t features a̷re part o̷f̸ the e̶xpe̷rimen̸tal PS1 i̸nte̷grat̶io̸n; real-g̸ame save/r̷e̷lo̶a̷d testing r̷e̶m̷a̶i̶ns ongoing.
 
-## // S̶to̷rag̶e and b̷uilt-in t̷ool̸s
+
+</details>
+
+
+</details>
+
+<details>
+<summary><strong>0x0S // S̷t̸o̶r̷a̸g̶e̷</strong></summary>
+
 
 Start → S̶to̷rag̶e Devices s̸e̸lects̶ ATA/e̸xF̸A̸T HDD, A̸P̸A̷/HDLoader H̶DD, USB, M̷X̶4SIO, MMCE, i̶Li̶n̶k̷, or U̶DPFS. Toggle s̷ou̸rces and c̸hoos̶e Apply c̸han̶g̶es & scan, r̷e̸sc̸an one e̸nab̸l̷ed̷ source w̶ith Square, o̸r rescan a̸ll enabled d̶evi̶ces. MX4SIO a̸n̶d̸ MMCE c̷a̶nnot be s̸elect̷e̶d together. U̶DPFS needs E̷t̷h̶e̷rn̸et and a̶ running s̶erv̶e̶r̶; its c̸ons̸ole-IP s̷ett̸ing̷ is t̶he PS2's̸ address.
 
-## 0x0A // Artwork a̸n̶d̸ saved p̶ref̸e̶ren̸ces̷
+
+</details>
+
+<details>
+<summary><strong>0x0A // Artwork</strong></summary>
+
 
 Artwork i̸s̷ optional. L̸UNA uses t̶it̸l̶e̶ IDs a̸n̶d̸ these P̶NG̷ naming c̷o̸n̸ven̸ti̸o̷ns:
 
@@ -162,7 +237,12 @@ Artwork i̸s̷ optional. L̸UNA uses t̶it̸l̶e̶ IDs a̸n̶d̸ these P̶NG̷ n
 /ART/PSBBN/<TITLE_ID>.png       Square artwork for Collections and Orbit
 /ART/SCROLL/<TITLE_ID>_LGO.png  Optional Scroll logo
 ```
-## 0x0B // S̸o̸u̶rce and c̸r̶ed̷its̸
+
+</details>
+
+<details>
+<summary><strong>0x0C// C̷r̸e̶d̷i̸t̶s̷</strong></summary>
+
 
 LUNA builds on years of work by the PlayStation 2 homebrew community.
 
@@ -172,7 +252,9 @@ LUNA builds on years of work by the PlayStation 2 homebrew community.
 
 **Neutrino:** Rick Gaiser (Maximus32 / [ps2max32](https://github.com/ps2max32)) and contributors, for the [Neutrino](https://github.com/ps2max32/neutrino) game runtime and associated driver work, including network transports and MX4SIO contributions.
 
-### Open PS2 Loader
+<details>
+<summary><strong>Open PS2 Loader</strong></summary>
+
 
 Special thanks to **[Ifcaro](https://github.com/ifcaro) and [jimmikaelkael](https://github.com/jimmikaelkael)**, OPL’s original developers, and **[Polo / polo35](https://github.com/ps2homebrew/Open-PS2-Loader/blob/master/CREDITS)**, whose HD Project formed its original code foundation.
 
@@ -184,7 +266,12 @@ LUNA uses OPL game-core code and preserves its upstream attribution.
 
 **Full acknowledgements:** [Official OPL credits](https://github.com/ps2homebrew/Open-PS2-Loader/blob/master/CREDITS)
 
-### Drivers, filesystems, and libraries
+
+</details>
+
+<details>
+<summary><strong>Drivers, filesystems, and libraries</strong></summary>
+
 
 **[ps2dev / PS2SDK contributors:](https://github.com/ps2dev/ps2sdk)** The development foundation and drivers for storage, filesystems, controllers, memory cards, networking, and audio.
 
@@ -204,7 +291,12 @@ LUNA uses OPL game-core code and preserves its upstream attribution.
 
 **[libpng](https://www.libpng.org/pub/png/libpng.html), [zlib](https://zlib.net/), and [libtiff](https://libtiff.gitlab.io/libtiff/) contributors:** Image and compression libraries used by LUNA’s graphics dependencies.
 
-### Design, assets, and community
+
+</details>
+
+<details>
+<summary><strong>Design, assets, and community</strong></summary>
+
 
 **[CosmicScale](https://github.com/CosmicScale) and the [PSBBN Definitive Project:](https://github.com/CosmicScale/PSBBN-Definitive-Project)** Design inspiration and assets.
 
@@ -219,3 +311,9 @@ Thank you to all LUNA beta testers and the wider PS2 homebrew community.
 See [AUTHORS.md](https://github.com/dnunezx/LUNA/blob/main/AUTHORS.md), [UPSTREAM.md](https://github.com/dnunezx/LUNA/blob/main/UPSTREAM.md), the preserved licenses in [LICENSES](https://github.com/dnunezx/LUNA/tree/main/LICENSES), and individual dependency notices for further attribution and source lineage.
 
 Games, Sony firmware, and proprietary POPS runtime files are not distributed in this source repository.
+
+
+</details>
+
+
+</details>
