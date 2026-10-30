@@ -4,11 +4,17 @@
   <sub>LIMEN UMBRAE NEXUS ARCANUM</sub>
 </p>
 
-**0x001 // S̷y̸s̶t̷e̸m̶**
+N̷ot everything b̸elongs in t̷he spotlight.
 
+B̷efore everything had t̸o be explained, t̷here was a different k̸ind of discovery. S̷ecrets passed between e̸nthusiasts, hidden possibilities, a̷nd experiences reserved f̸or those curious e̷nough to look d̸eeper.
 
+L̷U̸N̵A̶ carries t̷hat same spirit. N̸ot built for attention, b̷ut for those w̸ho still believe t̷here's more to d̸iscover. There was a t̷ime when the m̸ost interesting things w̷eren't advertised. They were f̸ound in forgotten c̷orners, shared through q̷uiet conversations, and passed a̸long by those w̷ho understood their s̸ignificance. No spotlight. N̷o grand announcements. J̸ust curiosity and the t̷hrill of discovering s̸omething unexpected.
 
-L̷UN̷A is m̷o̷re than w̶hat̷ it a̶ppears̸ to b̸e.  Built u̶po̷n [NHDDL](https://github.com/pcm720/nhddl), i̷t offers a̸ different v̶is̷i̷o̸n for t̶he̸ PlayStation 2̶. Rooted i̸n̶ familiar f̷ou̶ndatio̶ns yet d̸ri̶ven by u̶ne̸xplored possibilities, L̷UN̷A pushes b̸ey̷o̶nd̸ the b̶o̷u̷n̶d̷aries of i̷ts original d̶esi̸gn̶. An e̶xper̷i̷ence̸ that c̷onti̷n̸ues to e̸v̷olv̷e̶, revealing o̷n̶ly̶ what i̷t chooses t̷o show.
+That s̷pirit doesn't have t̸o disappear.
+
+// P̷reserve the m̸ystery. Share the e̷xperience. Keep it u̸nderground.
+
+Built u̶po̷n [NHDDL](https://github.com/pcm720/nhddl), i̷t offers a̸ different v̶is̷i̷o̸n for t̶he̸ PlayStation 2̶. Rooted i̸n̶ familiar f̷ou̶ndatio̶ns yet d̸ri̶ven by u̶ne̸xplored possibilities, L̷UN̷A pushes b̸ey̷o̶nd̸ the b̶o̷u̷n̶d̷aries of i̷ts original d̶esi̸gn̶. An e̶xper̷i̷ence̸ that c̷onti̷n̸ues to e̸v̷olv̷e̶, revealing o̷n̶ly̶ what i̷t chooses t̷o show.
 
 P̶S̶2 games l̶au̶n̸ch through [Neutrino](https://github.com/rickgaiser/neutrino) or [O̶P̸L](https://github.com/ps2homebrew/Open-PS2-Loader). PS1 g̶ames̷ launch t̸hr̸ou̷gh̸ [P̶SX̸Co̶re̷](https://github.com/dnunezx/PSXCore).
 
