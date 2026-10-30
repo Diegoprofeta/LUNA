@@ -5,8 +5,11 @@ $ErrorActionPreference = 'Stop'
 $workspace = Split-Path -Parent $PSScriptRoot
 $oplRoot = Join-Path $workspace 'opl'
 $outputRoot = Join-Path $workspace 'build-opl-core'
+$pythonCommand = if ($env:OS -eq 'Windows_NT') { 'python' } else { 'python3' }
+& $pythonCommand (Join-Path $PSScriptRoot 'fetch-dependencies.py') --root $workspace --components opl
+if ($LASTEXITCODE -ne 0) { throw 'Could not fetch the pinned OPL dependency.' }
 if (-not (Test-Path -LiteralPath (Join-Path $oplRoot 'ee_core/Makefile'))) {
-    throw 'OPL submodule is missing. Run git submodule update --init opl.'
+    throw 'The pinned OPL dependency is missing ee_core/Makefile.'
 }
 . (Join-Path $PSScriptRoot 'opl-runtime-files.ps1')
 $mount = '{0}:/src' -f $oplRoot

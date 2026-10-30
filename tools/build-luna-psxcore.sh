@@ -9,6 +9,11 @@ frontend="${LUNA_FRONTEND:-$workspace/nhddl}"
 core="$workspace/psxcore"
 build_dir="${LUNA_BUILD_DIR:-$frontend/build-psxcore}"
 emulator_build="${LUNA_EMULATOR_OPTION:-ON}"
+
+python3 "$workspace/tools/fetch-dependencies.py" --root "$workspace" --components psxcore
+if [ "$frontend" = "$workspace/nhddl" ]; then
+  python3 "$workspace/tools/fetch-dependencies.py" --root "$workspace" --components nhddl
+fi
 development=OFF
 if [ "${LUNA_PSXCORE_DEVELOPMENT:-OFF}" != OFF ] || [ -n "${LUNA_PSXCORE_RUNTIME_ELF:-}" ]; then
   echo "Development launch tools are local-only; use the local diagnostics rebuild instructions." >&2
@@ -22,7 +27,7 @@ runtime_elf=
 igr_return_path="${LUNA_PSXCORE_RETURN_PATH:-mc0:/APP_LUNA/luna.elf}"
 
 if [ ! -f "$core/Makefile" ]; then
-  echo "Initialize the psxcore submodule before building." >&2
+  echo "Fetch the pinned PSXCore dependency before building." >&2
   exit 1
 fi
 mkdir -p "$build_dir"

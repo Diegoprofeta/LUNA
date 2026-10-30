@@ -17,6 +17,9 @@ function Invoke-CoreGit {
 if (-not (Get-Command docker -ErrorAction SilentlyContinue)) { throw 'Docker is required.' }
 $buildImageId = & docker image inspect --format '{{.Id}}' $BuildImage
 if ($LASTEXITCODE -ne 0) { throw "Pull the SDK image before updating: docker pull $BuildImage" }
+$pythonCommand = if ($env:OS -eq 'Windows_NT') { 'python' } else { 'python3' }
+& $pythonCommand (Join-Path $PSScriptRoot 'fetch-dependencies.py') --root $workspacePath --components nhddl psxcore
+if ($LASTEXITCODE -ne 0) { throw 'Could not fetch the pinned frontend and PSXCore dependencies.' }
 if (Invoke-CoreGit status --porcelain) {
     throw 'PSXCore has local changes. Preserve them before updating.'
 }
@@ -31,7 +34,10 @@ if ($Revision) {
     $targetRevision = Invoke-CoreGit rev-parse --verify 'FETCH_HEAD^{commit}'
     Invoke-CoreGit merge-base --is-ancestor $previousRevision $targetRevision
 }
-Invoke-CoreGit checkout --detach $targetRevision
+$pinArguments = @('--root', $workspacePath, '--pin', 'psxcore', $targetRevision)
+if ($Revision) { $pinArguments += '--allow-rollback' }
+& $pythonCommand (Join-Path $PSScriptRoot 'fetch-dependencies.py') @pinArguments
+if ($LASTEXITCODE -ne 0) { throw 'Could not update the pinned PSXCore dependency.' }
 $buildName = if ($Hardware) { 'build-psxcore-hardware' } else { 'build-psxcore' }
 $emulatorOption = if ($Hardware) { 'OFF' } else { 'ON' }
 $developmentOption = if ($Development) { 'ON' } else { 'OFF' }

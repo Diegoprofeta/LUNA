@@ -32,7 +32,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          previous=$(git rev-parse HEAD:psxcore)
+          previous=$(python3 tools/fetch-dependencies.py --revision psxcore)
           latest=$(git ls-remote https://github.com/dnunezx/PSXCore.git refs/heads/main | cut -f1)
           [[ "$latest" =~ ^[0-9a-f]{40}$ ]]
           echo "core_sha=$latest" >> "$GITHUB_OUTPUT"
@@ -51,11 +51,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          git submodule update --init --recursive nhddl psxcore
-          previous=$(git rev-parse HEAD:psxcore)
-          git -C psxcore fetch origin main
-          git -C psxcore merge-base --is-ancestor "$previous" "$CORE_SHA"
-          git -C psxcore checkout --detach "$CORE_SHA"
+          python3 tools/fetch-dependencies.py --components nhddl psxcore
+          python3 tools/fetch-dependencies.py --pin psxcore "$CORE_SHA"
 
       - name: Build hardware and emulator packages and validate runtime
         if: steps.revision.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
@@ -87,7 +84,7 @@ jobs:
           ref: ${{ needs.validate.outputs.luna_sha }}
           persist-credentials: false
 
-      - name: Publish only the validated reference
+      - name: Publish only the validated dependency pin
         env:
           GH_TOKEN: ${{ github.token }}
           CORE_SHA: ${{ needs.validate.outputs.core_sha }}
@@ -112,8 +109,15 @@ jobs:
           fi
           git config user.name 'Danny Nunez'
           git config user.email 'dnunezx@users.noreply.github.com'
-          git update-index --cacheinfo "160000,$CORE_SHA,psxcore"
-          [[ "$(git diff --cached --name-only)" == psxcore ]]
+          python3 - "$CORE_SHA" <<'PY'
+          import json, pathlib, sys
+          path = pathlib.Path('tools/dependencies.json')
+          dependencies = json.loads(path.read_text())
+          dependencies['psxcore']['revision'] = sys.argv[1]
+          path.write_text(json.dumps(dependencies, indent=2) + '\n')
+          PY
+          git add tools/dependencies.json
+          [[ "$(git diff --cached --name-only)" == tools/dependencies.json ]]
           git diff --cached --check
           git commit -m "Update PSXCore to ${CORE_SHA:0:7} after build validation"
           git push origin HEAD:main

@@ -18,6 +18,12 @@ dist/
 *.tar
 *.tar.gz
 
+# Pinned source dependencies are downloaded by tools/fetch-dependencies.py.
+/nhddl/
+/neutrino/
+/opl/
+/psxcore/
+
 # Local emulation and test assets
 /emulation/
 /neutrino/lab/
